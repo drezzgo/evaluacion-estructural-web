@@ -6,43 +6,113 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 	</head>
-	<body>
+	<body class="antialiased bg-white text-[#242424] font-['Inter',_sans-serif]">
 		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		
+		<main id="home-main" class="mx-auto px-6 md:px-12 w-full max-w-[1200px] mt-12 md:mt-20">
+			<!-- Hero Section -->
+			<section class="py-20 flex flex-col items-center text-center space-y-8">
+				<h1 class="text-4xl md:text-[64px] font-bold leading-[1.1] text-[#242424] max-w-4xl tracking-tighter font-sans">
+					Ingeniería y Diagnóstico Estructural de Precisión
+				</h1>
+				<p class="text-lg md:text-xl font-light leading-relaxed text-[#898989] max-w-2xl tracking-[-0.2px]">
+					Proveyendo consultoría especializada en vulnerabilidad sísmica, patología estructural y diseño de reforzamientos con estricta rigurosidad técnica.
+				</p>
+				<div class="pt-6 flex flex-col sm:flex-row gap-4">
+					<a 
+						href="/contacto" 
+						class="inline-flex justify-center items-center px-6 py-4 bg-[#242424] text-white font-medium rounded-lg hover:bg-opacity-90 transition-opacity text-base shadow-[rgba(255,255,255,0.15)_0px_2px_0px_inset]"
+					>
+						Solicitar Diagnóstico
+					</a>
+					<a 
+						href="/servicios" 
+						class="inline-flex justify-center items-center px-6 py-4 bg-white text-[#242424] font-medium rounded-lg shadow-[rgba(19,19,22,0.7)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] hover:bg-gray-50 transition-colors text-base"
+					>
+						Conocer Servicios
+					</a>
+				</div>
+			</section>
+
+			<!-- Services Section -->
+			<section class="py-24 border-t border-[#f5f5f5] mt-12">
+				<div class="mb-16">
+					<h2 class="text-3xl md:text-[48px] font-bold leading-[1.1] text-[#242424] tracking-tight font-sans">
+						Servicios Especializados
+					</h2>
+					<p class="mt-4 text-[#898989] font-light max-w-2xl text-[18px] tracking-[-0.2px]">
+						Intervenciones y análisis estructurados estrictamente bajo la normativa vigente (NSR-10).
+					</p>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
+						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Vulnerabilidad Sísmica</h3>
+						<p class="text-[#898989] font-light leading-relaxed flex-grow text-[16px]">
+							Evaluación del desempeño estructural de edificaciones existentes. Desarrollo de modelos matemáticos y levantamientos de alta precisión.
+						</p>
+					</div>
+
+					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
+						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Patología Estructural</h3>
+						<p class="text-[#898989] font-light leading-relaxed flex-grow text-[16px]">
+							Diagnóstico integral de fallas mecánicas y deterioro de materiales mediante ensayos destructivos y no destructivos supervisados.
+						</p>
+					</div>
+
+					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
+						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Reforzamiento</h3>
+						<p class="text-[#898989] font-light leading-relaxed flex-grow text-[16px]">
+							Diseño técnico de repotenciación y rehabilitación estructural, optimizando viabilidad económica y operacional.
+						</p>
+					</div>
+				</div>
+			</section>
+			
+			<!-- Methodology / Trust Section -->
+			<section class="py-24 border-t border-[#f5f5f5]">
+				<div class="flex flex-col md:flex-row gap-16 items-center">
+					<div class="w-full md:w-1/2 aspect-video shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-2xl p-4 md:p-8 flex items-center justify-center">
+						<div class="text-[#898989] text-[14px] font-mono border border-dashed border-[#898989]/20 rounded-xl w-full h-full flex flex-col items-center justify-center bg-[#f9f9f9] gap-4">
+							<div class="grid grid-cols-4 grid-rows-3 gap-2 w-1/2 h-1/2 opacity-30">
+								<div class="border border-[#242424] col-span-2 row-span-2"></div>
+								<div class="border border-[#242424]"></div>
+								<div class="border border-[#242424]"></div>
+								<div class="border border-[#242424] col-span-2"></div>
+								<div class="border border-[#242424] col-span-4"></div>
+							</div>
+							<span>[Modelo Computacional]</span>
+						</div>
+					</div>
+					<div class="w-full md:w-1/2 space-y-8">
+						<h2 class="text-[32px] md:text-[40px] font-bold leading-[1.1] text-[#242424] tracking-tight font-sans">
+							Rigurosidad Normativa
+						</h2>
+						<p class="text-[#898989] font-light leading-relaxed text-[16px]">
+							Basamos nuestras conclusiones en datos objetivos y metodologías estandarizadas. Garantizamos resoluciones precisas que sustentan jurídicamente el estado físico de la edificación.
+						</p>
+						<ul class="space-y-5 text-[#242424] font-medium text-[16px] list-none p-0">
+							<li class="flex items-center gap-4">
+								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Exploración física detallada
+							</li>
+							<li class="flex items-center gap-4">
+								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Pruebas y Ensayos de Materiales
+							</li>
+							<li class="flex items-center gap-4">
+								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Validación en Software Analítico
+							</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+
 		</main>
 		<Footer />
 	</body>
