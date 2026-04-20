@@ -1,0 +1,290 @@
+---
+const navLinks = [
+  { href: '/',           label: 'Inicio'   },
+  { href: '/servicios',  label: 'Servicios' },
+  { href: '/nosotros',   label: 'Nosotros'  },
+  { href: '/contacto',   label: 'Contacto'  },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <!-- Logo -->
+    <a href="/" class="header__logo" aria-label="Inicio — Evaluación Estructural SAS">
+      <span class="header__logo-mark">E</span>
+      <span class="header__logo-text">
+        Evaluación<br /><strong>Estructural SAS</strong>
+      </span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="header__nav" aria-label="Navegación principal">
+      <ul class="header__nav-list">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class:list={['header__nav-link', { 'header__nav-link--active': currentPath === href || (href !== '/' && currentPath.startsWith(href)) }]}
+              aria-current={currentPath === href ? 'page' : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- CTA Button -->
+    <a href="/contacto" class="header__cta">Solicitar cotización</a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="header__toggle"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      id="menu-toggle"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="header__mobile" id="mobile-menu" aria-hidden="true">
+    <nav aria-label="Menú móvil">
+      <ul class="header__mobile-list">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class:list={['header__mobile-link', { 'header__mobile-link--active': currentPath === href }]}
+              aria-current={currentPath === href ? 'page' : undefined}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/contacto" class="header__mobile-cta">Solicitar cotización</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu   = document.getElementById('mobile-menu');
+
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      menu.setAttribute('aria-hidden', String(expanded));
+      menu.classList.toggle('header__mobile--open', !expanded);
+      toggle.classList.toggle('header__toggle--open', !expanded);
+    });
+  }
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    gap: var(--space-6);
+  }
+
+  /* Logo */
+  .header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .header__logo-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-primary);
+    color: var(--color-accent);
+    font-size: 1.25rem;
+    font-weight: var(--font-bold);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+
+  .header__logo-text {
+    font-size: var(--text-sm);
+    line-height: 1.3;
+    color: var(--color-text-muted);
+  }
+
+  .header__logo-text strong {
+    display: block;
+    color: var(--color-primary);
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+  }
+
+  /* Desktop nav */
+  .header__nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .header__nav { display: flex; }
+  }
+
+  .header__nav-list {
+    display: flex;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .header__nav-link {
+    display: inline-block;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition), background-color var(--transition);
+  }
+
+  .header__nav-link:hover,
+  .header__nav-link--active {
+    color: var(--color-primary);
+    background-color: var(--color-bg-soft);
+  }
+
+  /* CTA */
+  .header__cta {
+    display: none;
+    padding: var(--space-2) var(--space-5);
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition), box-shadow var(--transition);
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .header__cta:hover {
+    background-color: var(--color-accent-alt);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (min-width: 768px) {
+    .header__cta { display: inline-block; }
+  }
+
+  /* Hamburger toggle */
+  .header__toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--space-2);
+    cursor: pointer;
+  }
+
+  @media (min-width: 768px) {
+    .header__toggle { display: none; }
+  }
+
+  .header__toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+    transition: transform var(--transition), opacity var(--transition);
+  }
+
+  .header__toggle--open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .header__toggle--open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .header__toggle--open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Mobile menu */
+  .header__mobile {
+    display: none;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+
+  .header__mobile--open {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .header__mobile,
+    .header__mobile--open {
+      display: none;
+    }
+  }
+
+  .header__mobile-list {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4) var(--container-pad);
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .header__mobile-link {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-sm);
+  }
+
+  .header__mobile-link:hover,
+  .header__mobile-link--active {
+    color: var(--color-primary);
+    background-color: var(--color-bg-soft);
+  }
+
+  .header__mobile-cta {
+    display: block;
+    text-align: center;
+    margin-top: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+</style>

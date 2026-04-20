@@ -1,0 +1,63 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  primaryCta?: { href: string; label: string };
+  secondaryCta?: { href: string; label: string };
+}
+
+const {
+  title = '¿Necesita una evaluación estructural?',
+  subtitle = 'Contáctenos hoy y reciba una asesoría inicial sin costo. Nuestros ingenieros evaluarán su caso y le propondrán la solución técnica más adecuada.',
+  primaryCta = { href: '/contacto', label: 'Solicitar cotización' },
+  secondaryCta = { href: '/servicios', label: 'Ver servicios' },
+} = Astro.props;
+---
+
+<section class="section section--dark">
+  <div class="container cta__inner">
+    <div class="cta__content">
+      <span class="section-label">Trabajemos juntos</span>
+      <h2 class="section-title">{title}</h2>
+      <p class="section-subtitle">{subtitle}</p>
+    </div>
+    <div class="cta__actions">
+      <Button href={primaryCta.href} variant="primary" size="lg">
+        {primaryCta.label}
+      </Button>
+      <Button href={secondaryCta.href} variant="ghost" size="lg">
+        {secondaryCta.label}
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-10);
+  }
+
+  @media (min-width: 900px) {
+    .cta__inner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cta__content {
+      max-width: 580px;
+    }
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    flex-shrink: 0;
+  }
+</style>

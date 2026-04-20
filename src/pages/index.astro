@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServicesSection from '../components/ServicesSection.astro';
+import AboutSection from '../components/AboutSection.astro';
+import CTASection from '../components/CTASection.astro';
+---
+
+<BaseLayout title="Inicio" description="Evaluación Estructural SAS — Inspección, diagnóstico y rehabilitación estructural en Colombia. Ingenieros matriculados COPNIA con más de 20 años de experiencia.">
+  <Hero
+    badge="Ingeniería estructural de confianza"
+    title="Protegemos la integridad de sus estructuras"
+    subtitle="Somos una firma colombiana especializada en inspección, diagnóstico y rehabilitación estructural. Actuamos con rigor técnico, cumplimiento normativo NSR-10 y compromiso profesional en cada proyecto."
+    primaryCta={{ href: '/contacto', label: 'Solicitar cotización' }}
+    secondaryCta={{ href: '/servicios', label: 'Nuestros servicios' }}
+  />
+  <ServicesSection />
+  <AboutSection />
+  <CTASection />
+</BaseLayout>

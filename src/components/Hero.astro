@@ -1,0 +1,192 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  primaryCta?: { href: string; label: string };
+  secondaryCta?: { href: string; label: string };
+  badge?: string;
+}
+
+const {
+  title,
+  subtitle,
+  primaryCta,
+  secondaryCta,
+  badge,
+} = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__content">
+      {badge && <span class="hero__badge">{badge}</span>}
+      <h1 class="hero__title">{title}</h1>
+      {subtitle && <p class="hero__subtitle">{subtitle}</p>}
+      {(primaryCta || secondaryCta) && (
+        <div class="hero__actions">
+          {primaryCta && (
+            <Button href={primaryCta.href} variant="primary" size="lg">
+              {primaryCta.label}
+            </Button>
+          )}
+          {secondaryCta && (
+            <Button href={secondaryCta.href} variant="ghost" size="lg">
+              {secondaryCta.label}
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+
+    <!-- Trust indicators -->
+    <div class="hero__trust">
+      <div class="hero__trust-item">
+        <span class="hero__trust-number">+20</span>
+        <span class="hero__trust-label">Años de experiencia</span>
+      </div>
+      <div class="hero__trust-divider" aria-hidden="true"></div>
+      <div class="hero__trust-item">
+        <span class="hero__trust-number">+500</span>
+        <span class="hero__trust-label">Proyectos ejecutados</span>
+      </div>
+      <div class="hero__trust-divider" aria-hidden="true"></div>
+      <div class="hero__trust-item">
+        <span class="hero__trust-number">100%</span>
+        <span class="hero__trust-label">Rigor técnico</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-primary);
+    overflow: hidden;
+  }
+
+  /* Geometric background pattern */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(135deg, rgba(200, 154, 46, 0.08) 1px, transparent 1px),
+      linear-gradient(225deg, rgba(200, 154, 46, 0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 50%,
+      rgba(13, 45, 79, 0) 0%,
+      rgba(13, 45, 79, 0.7) 100%
+    );
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--space-24);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+
+  .hero__content {
+    max-width: 760px;
+  }
+
+  /* Badge */
+  .hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-4);
+    background-color: rgba(200, 154, 46, 0.15);
+    border: 1px solid rgba(200, 154, 46, 0.4);
+    color: var(--color-accent);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 100px;
+    margin-bottom: var(--space-6);
+  }
+
+  /* Title */
+  .hero__title {
+    font-size: clamp(var(--text-3xl), 5.5vw, var(--text-5xl));
+    font-weight: var(--font-bold);
+    color: var(--color-text-light);
+    line-height: 1.15;
+    margin-bottom: var(--space-6);
+  }
+
+  /* Subtitle */
+  .hero__subtitle {
+    font-size: clamp(var(--text-base), 2vw, var(--text-xl));
+    color: rgba(255, 255, 255, 0.72);
+    line-height: var(--leading-normal);
+    max-width: 600px;
+    margin-bottom: var(--space-10);
+  }
+
+  /* Actions */
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  /* Trust strip */
+  .hero__trust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6) var(--space-8);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    width: fit-content;
+  }
+
+  .hero__trust-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .hero__trust-number {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--color-accent);
+    line-height: 1;
+  }
+
+  .hero__trust-label {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .hero__trust-divider {
+    width: 1px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 480px) {
+    .hero__trust-divider { display: none; }
+    .hero__trust { gap: var(--space-5); }
+  }
+</style>

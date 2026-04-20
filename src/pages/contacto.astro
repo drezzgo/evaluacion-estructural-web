@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactSection from '../components/ContactSection.astro';
+---
+
+<BaseLayout
+  title="Contacto"
+  description="Contáctenos para una evaluación estructural. Ingenieros especializados disponibles para atender su consulta."
+>
+  <!-- Page Hero -->
+  <section class="page-hero section--dark section">
+    <div class="container">
+      <span class="section-label">Estamos aquí para ayudarle</span>
+      <h1 class="section-title" style="color: white;">Contacto</h1>
+      <p class="section-subtitle">
+        Cuéntenos sobre su proyecto. Nuestro equipo de ingenieros evaluará su caso
+        y le responderá en menos de 24 horas hábiles.
+      </p>
+    </div>
+  </section>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding-block: var(--space-16);
+  }
+</style>

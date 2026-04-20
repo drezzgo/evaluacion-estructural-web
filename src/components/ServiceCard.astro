@@ -1,0 +1,94 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  href?: string;
+}
+
+const { icon, title, description, href } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag href={href} class:list={['card', { 'card--link': !!href }]}>
+  <div class="card__icon" aria-hidden="true">
+    <Fragment set:html={icon} />
+  </div>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__description">{description}</p>
+  {href && (
+    <span class="card__cta">
+      Conocer más
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </span>
+  )}
+</Tag>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: box-shadow var(--transition), border-color var(--transition),
+      transform var(--transition);
+  }
+
+  .card--link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .card--link:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+  }
+
+  .card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background-color: rgba(13, 45, 79, 0.07);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .card__title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-primary);
+    line-height: var(--leading-tight);
+  }
+
+  .card__description {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+    flex: 1;
+  }
+
+  .card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent);
+    margin-top: var(--space-2);
+    transition: gap var(--transition);
+  }
+
+  .card--link:hover .card__cta {
+    gap: var(--space-2);
+  }
+</style>

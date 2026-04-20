@@ -1,0 +1,109 @@
+---
+import Button from './Button.astro';
+---
+
+<section class="section">
+  <div class="container about__inner">
+    <!-- Text -->
+    <div class="about__content">
+      <span class="section-label">Quiénes somos</span>
+      <h2 class="section-title">Más de dos décadas al servicio de la ingeniería estructural</h2>
+      <hr class="divider" />
+      <p class="about__body">
+        Evaluación Estructural SAS es una empresa colombiana de ingeniería especializada en la
+        inspección, diagnóstico y rehabilitación de estructuras. Fundada por ingenieros civiles
+        con matrícula profesional vigente ante el COPNIA, nuestra firma combina rigurosidad
+        técnica con un profundo conocimiento de las normas NSR-10 y demás reglamentaciones
+        vigentes en Colombia.
+      </p>
+      <p class="about__body">
+        Atendemos proyectos residenciales, comerciales, industriales e institucionales en todo
+        el país, entregando informes técnicos claros, soluciones estructuralmente sólidas y
+        acompañamiento permanente durante la ejecución de obras.
+      </p>
+      <div class="about__actions">
+        <Button href="/nosotros" variant="secondary" size="md">Conocer más sobre nosotros</Button>
+        <Button href="/contacto" variant="outline" size="md">Hablar con un experto</Button>
+      </div>
+    </div>
+
+    <!-- Indicators -->
+    <div class="about__indicators">
+      <div class="indicator">
+        <span class="indicator__number">NSR-10</span>
+        <span class="indicator__label">Cumplimiento normativo riguroso</span>
+      </div>
+      <div class="indicator">
+        <span class="indicator__number">COPNIA</span>
+        <span class="indicator__label">Ingenieros con matrícula profesional</span>
+      </div>
+      <div class="indicator">
+        <span class="indicator__number">+20 años</span>
+        <span class="indicator__label">De experiencia comprobada</span>
+      </div>
+      <div class="indicator">
+        <span class="indicator__number">Nacional</span>
+        <span class="indicator__label">Cobertura en todo el territorio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .about__inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .about__body {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-5);
+  }
+
+  .about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+
+  /* Indicators */
+  .about__indicators {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .indicator {
+    padding: var(--space-6);
+    background-color: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .indicator__number {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-primary);
+    line-height: 1;
+  }
+
+  .indicator__label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+</style>
