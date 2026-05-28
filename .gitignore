@@ -41,5 +41,5 @@ Thumbs.db
 *.tsbuildinfo
 
 # Local Agent/Tooling (Optional, but safe for this project)
-.agents/skills-lock.json
+.agents/
 .gemini/

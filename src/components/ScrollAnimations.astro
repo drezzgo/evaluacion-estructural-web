@@ -1,0 +1,157 @@
+---
+// ScrollAnimations.astro
+// Scroll-triggered animations using Anime.js v4 + IntersectionObserver
+// Uses astro:page-load to re-run on every client-side navigation
+---
+
+<script>
+import { animate, stagger } from 'animejs';
+
+function initAnimations() {
+  // Reset opacity on all animated elements so they can re-animate
+  document.querySelectorAll(
+    '.scroll-reveal, .service-card, .animated-list-item, .pillar-card, .timeline-item'
+  ).forEach(el => {
+    (el as HTMLElement).style.opacity = '0';
+  });
+
+  // ─── UTILITY: fire once element enters viewport ───────────────────
+  function onVisible(
+    selector: string,
+    callback: (el: Element) => void,
+    opts: IntersectionObserverInit = {}
+  ) {
+    const els = document.querySelectorAll(selector);
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          callback(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, ...opts });
+    els.forEach(el => io.observe(el));
+  }
+
+  // ─── 1. COUNTING NUMBERS ──────────────────────────────────────────
+  onVisible('.metric-number', (el) => {
+    const htmlEl = el as HTMLElement;
+    const target = parseFloat(htmlEl.dataset.target || '0');
+    const prefix = htmlEl.dataset.prefix || '';
+    const suffix = htmlEl.dataset.suffix || '';
+    const isInt = Number.isInteger(target);
+    const counter = { val: 0 };
+    animate(counter, {
+      val: target,
+      duration: 1800,
+      ease: 'outExpo',
+      onUpdate: () => {
+        htmlEl.textContent = prefix + (isInt ? Math.round(counter.val) : counter.val.toFixed(1)) + suffix;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  // ─── 2. SVG PATH DRAWING (FEM diagram) ────────────────────────────
+  onVisible('#fem-diagram', (el) => {
+    const lines = el.querySelectorAll<SVGGeometryElement>('line, path, polyline');
+    lines.forEach(p => {
+      try {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = String(len);
+        p.style.strokeDashoffset = String(len);
+      } catch (_) {}
+    });
+    animate('#fem-diagram line, #fem-diagram path, #fem-diagram polyline', {
+      strokeDashoffset: [null, 0],
+      ease: 'inOutSine',
+      duration: 1400,
+      delay: stagger(60),
+    });
+    animate('#fem-diagram circle', {
+      scale: [0, 1],
+      opacity: [0, 1],
+      duration: 500,
+      delay: stagger(80, { start: 1000 }),
+      ease: 'outBack',
+    });
+  }, { threshold: 0.3 });
+
+  // ─── 3. SCROLL REVEAL (generic sections) ──────────────────────────
+  onVisible('.scroll-reveal', (el) => {
+    animate(el, {
+      translateY: [32, 0],
+      opacity: [0, 1],
+      duration: 700,
+      ease: 'outCubic',
+    });
+  });
+
+  // ─── 4. SERVICE CARDS stagger ─────────────────────────────────────
+  onVisible('.service-card-grid', (el) => {
+    animate(el.querySelectorAll('.service-card'), {
+      translateY: [24, 0],
+      opacity: [0, 1],
+      duration: 600,
+      delay: stagger(120),
+      ease: 'outCubic',
+    });
+  }, { threshold: 0.15 });
+
+  // ─── 5. TIMELINE stagger ──────────────────────────────────────────
+  onVisible('.timeline-container', (el) => {
+    animate(el.querySelectorAll('.timeline-item'), {
+      translateX: [-40, 0],
+      opacity: [0, 1],
+      duration: 700,
+      delay: stagger(180),
+      ease: 'outCubic',
+    });
+    const line = el.querySelector<HTMLElement>('.timeline-line');
+    if (line) {
+      animate(line, { scaleY: [0, 1], duration: 1000, ease: 'outCubic' });
+    }
+    animate(el.querySelectorAll('.timeline-node'), {
+      scale: [0, 1],
+      duration: 400,
+      delay: stagger(180, { start: 300 }),
+      ease: 'outBack',
+    });
+  }, { threshold: 0.1 });
+
+  // ─── 6. PILLAR CARDS pop-in ───────────────────────────────────────
+  onVisible('.pillars-grid', (el) => {
+    animate(el.querySelectorAll('.pillar-card'), {
+      scale: [0.92, 1],
+      opacity: [0, 1],
+      duration: 500,
+      delay: stagger(100),
+      ease: 'outBack',
+    });
+  }, { threshold: 0.2 });
+
+  // ─── 7. Blog / Project list cards ─────────────────────────────────
+  onVisible('.animated-list', (el) => {
+    animate(el.querySelectorAll('.animated-list-item'), {
+      translateY: [20, 0],
+      opacity: [0, 1],
+      duration: 550,
+      delay: stagger(100),
+      ease: 'outCubic',
+    });
+  }, { threshold: 0.1 });
+
+  // ─── 8. CTA Button pulse entrance ─────────────────────────────────
+  onVisible('.cta-button-animated', (el) => {
+    animate(el, {
+      scale: [0.95, 1],
+      opacity: [0, 1],
+      duration: 600,
+      ease: 'outBack',
+    });
+  });
+}
+
+// Run on every page navigation (Astro View Transitions)
+document.addEventListener('astro:page-load', initAnimations);
+</script>

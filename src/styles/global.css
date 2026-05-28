@@ -1,3 +1,164 @@
 @import "tailwindcss";
 
+/* Load Cal Sans display font */
+@font-face {
+  font-family: 'Cal Sans';
+  src: url('https://cdn.jsdelivr.net/npm/cal-sans@1.0.1/dist/CalSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-ea-blue: #126DA6;
+  --color-ea-light-blue: #3ab7bf;
+  --color-brand-charcoal: #242424;
+  --color-brand-midnight: #111111;
+  --color-brand-gray-light: #fdfefe;
+  --color-brand-gray-mid: #64748b;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Cal Sans', 'Inter', sans-serif;
+}
+
+/* Base Styles */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--color-brand-charcoal);
+  background-color: #ffffff;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-brand-midnight);
+}
+
+/* Selection highlight in brand colors */
+::selection {
+  background-color: rgba(18, 110, 166, 0.08);
+  color: #126DA6;
+}
+
+/* Custom premium class names for our engineering shadow system (Cal.com inspired with blue touch) */
+.cal-shadow {
+  box-shadow: 
+    rgba(19, 19, 22, 0.04) 0px 1px 5px -4px, 
+    rgba(18, 110, 166, 0.08) 0px 0px 0px 1px, 
+    rgba(18, 110, 166, 0.04) 0px 4px 12px 0px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cal-shadow:hover {
+  box-shadow: 
+    rgba(19, 19, 22, 0.06) 0px 2px 8px -3px, 
+    rgba(18, 110, 166, 0.12) 0px 0px 0px 1px, 
+    rgba(18, 110, 166, 0.08) 0px 8px 24px 0px;
+  transform: translateY(-2px);
+}
+
+.cal-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-brand-charcoal);
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 2px 0px inset, rgba(0, 0, 0, 0.05) 0px 2px 4px;
+}
+
+.cal-button-primary:hover {
+  background-color: var(--color-brand-midnight);
+  transform: translateY(-1px);
+  box-shadow: rgba(255, 255, 255, 0.15) 0px 2px 0px inset, rgba(18, 110, 166, 0.2) 0px 4px 12px;
+}
+
+.cal-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  color: var(--color-brand-charcoal);
+  font-weight: 500;
+  border-radius: 9999px;
+  box-shadow: 
+    rgba(19, 19, 22, 0.02) 0px 1px 5px -4px, 
+    rgba(18, 110, 166, 0.08) 0px 0px 0px 1px, 
+    rgba(18, 110, 166, 0.03) 0px 4px 8px 0px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cal-button-secondary:hover {
+  background-color: rgba(18, 110, 166, 0.02);
+  border-color: rgba(18, 110, 166, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 
+    rgba(19, 19, 22, 0.04) 0px 1px 5px -4px, 
+    rgba(18, 110, 166, 0.12) 0px 0px 0px 1px, 
+    rgba(18, 110, 166, 0.05) 0px 6px 12px 0px;
+}
+
+/* Blueprint grid pattern overlay (Civil Engineering vibe) */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(18, 110, 166, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 110, 166, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center;
+}
+
+.blueprint-grid-dense {
+  background-image: 
+    linear-gradient(rgba(18, 110, 166, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 110, 166, 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: center;
+}
+
+/* Subtle blueprint drawing lines */
+.blueprint-axis {
+  position: relative;
+}
+
+.blueprint-axis::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(18, 110, 166, 0.2) 20%, rgba(18, 110, 166, 0.2) 80%, transparent);
+}
+
+/* Staggered fadeInUp entrance animations (Framer/Motion inspired CSS-only) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-75 { animation-delay: 75ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
 

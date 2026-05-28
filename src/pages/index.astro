@@ -1,119 +1,416 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import HeroThreeJS from '../components/HeroThreeJS.astro';
+import ScrollAnimations from '../components/ScrollAnimations.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+// Query latest content collections
+const latestProyectos = (await getCollection('proyectos'))
+	.sort((a, b) => a.data.order - b.data.order)
+	.slice(0, 3);
+
+const latestBlog = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 2);
+
+const WHATSAPP_NUMBER = '573000000000';
+const WHATSAPP_MSG = encodeURIComponent('Hola, quisiera solicitar información sobre sus servicios de evaluación estructural.');
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`;
+
+const icons = {
+	"shield-check": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`,
+	"microscope": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"></path><path d="M3 22h18"></path><path d="M14 22a7 7 0 1 0 0-14h-1"></path><path d="M9 14h2"></path><path d="M9 12a2 2 0 1 1-2-2V6h6v4.1"></path><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path></svg>`,
+	"wrench": `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`
+};
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} | Consultoría e Ingeniería Estructural`} description={SITE_DESCRIPTION} />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		<style>
+			/* Ensure THREE canvas fills hero */
+			#hero-section { position: relative; min-height: 580px; }
+			@media (min-width: 768px) { #hero-section { min-height: 700px; } }
+			/* Opacity: 0 initial state for scroll-reveal targets */
+			.scroll-reveal, .service-card, .animated-list-item, .pillar-card, .timeline-item { opacity: 0; }
+		</style>
 	</head>
-	<body class="antialiased bg-white text-[#242424] font-['Inter',sans-serif]">
+	<body class="antialiased bg-white text-[#242424]">
 		<Header />
 		
-		<main id="home-main" class="mx-auto px-6 md:px-12 w-full max-w-[1200px] mt-12 md:mt-20">
-			<!-- Hero Section -->
-			<section class="py-20 flex flex-col items-center text-center space-y-8">
-				<h1 class="text-4xl md:text-[64px] font-bold leading-[1.1] text-[#242424] max-w-4xl tracking-tighter font-sans">
-					Ingeniería y Diagnóstico Estructural de Precisión
-				</h1>
-				<p class="text-lg md:text-xl font-light leading-relaxed text-[#898989] max-w-2xl tracking-[-0.2px]">
-					Proveyendo consultoría especializada en vulnerabilidad sísmica, patología estructural y diseño de reforzamientos con estricta rigurosidad técnica.
-				</p>
-				<div class="pt-6 flex flex-col sm:flex-row gap-4">
-					<a 
-						href="/contacto" 
-						class="inline-flex justify-center items-center px-6 py-4 bg-[#242424] text-white font-medium rounded-lg hover:bg-opacity-90 transition-opacity text-base shadow-[rgba(255,255,255,0.15)_0px_2px_0px_inset]"
-					>
-						Solicitar Diagnóstico
-					</a>
-					<a 
-						href="/servicios" 
-						class="inline-flex justify-center items-center px-6 py-4 bg-white text-[#242424] font-medium rounded-lg shadow-[rgba(19,19,22,0.7)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] hover:bg-gray-50 transition-colors text-base"
-					>
-						Conocer Servicios
-					</a>
+		<main id="home-main" class="w-full">
+			
+			<!-- ═══ HERO SECTION — Three.js background ═══ -->
+			<section id="hero-section" class="relative overflow-hidden pt-24 pb-20 md:pt-36 md:pb-28 flex flex-col items-center text-center px-6">
+				<!-- Three.js animated structural building -->
+				<HeroThreeJS />
+
+				<!-- Blueprint grid overlay (lighter, blends with 3D) -->
+				<div class="absolute inset-0 blueprint-grid opacity-20 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_100%)]"></div>
+
+				<!-- Gradient vignette bottom fade -->
+				<div class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+				
+				<div class="relative z-10 max-w-[1200px] mx-auto flex flex-col items-center">
+					<!-- Giant Isotype with halo glow ring -->
+					<div class="relative mb-8 animate-fade-in-up">
+						<div class="absolute inset-0 rounded-full bg-ea-blue/10 blur-2xl scale-150 animate-pulse"></div>
+						<img src="/favicon.svg" alt="Evaluación Estructural SAS Isotype" class="relative h-24 w-24 hover:scale-105 hover:rotate-3 transition-all duration-500 drop-shadow-xl" />
+					</div>
+
+					<!-- Tag badge -->
+					<div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-ea-blue bg-ea-blue/5 border border-ea-blue/10 rounded-full mb-6 animate-fade-in-up delay-75">
+						<span class="w-1.5 h-1.5 rounded-full bg-ea-blue animate-pulse"></span>
+						Consultoría y Patología Estructural en Bogotá
+					</div>
+					
+					<h1 class="text-4xl md:text-[68px] font-bold leading-[1.05] text-[#111111] max-w-4xl tracking-tighter font-display animate-fade-in-up delay-100">
+						Ingeniería y Diagnóstico<br class="hidden md:block"/> Estructural de <span class="bg-gradient-to-r from-ea-blue to-ea-light-blue bg-clip-text text-transparent">Precisión</span>
+					</h1>
+					
+					<p class="mt-6 text-base md:text-[19px] font-light leading-relaxed text-gray-500 max-w-2xl tracking-[-0.2px] animate-fade-in-up delay-150">
+						Firma consultora especializada en vulnerabilidad sísmica, patología estructural y diseño de reforzamientos con estricta rigurosidad bajo la normativa colombiana NSR-10.
+					</p>
+					
+					<div class="pt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto animate-fade-in-up delay-200">
+						<a href="#cotizar" class="cal-button-primary cta-button-animated text-sm font-semibold h-12 px-8">
+							Solicitar Diagnóstico
+						</a>
+						<a href="/servicios" class="cal-button-secondary text-sm font-semibold h-12 px-6">
+							Conocer Servicios
+						</a>
+					</div>
 				</div>
 			</section>
 
-			<!-- Services Section -->
-			<section class="py-24 border-t border-[#f5f5f5] mt-12">
-				<div class="mb-16">
-					<h2 class="text-3xl md:text-[48px] font-bold leading-[1.1] text-[#242424] tracking-tight font-sans">
-						Servicios Especializados
-					</h2>
-					<p class="mt-4 text-[#898989] font-light max-w-2xl text-[18px] tracking-[-0.2px]">
-						Intervenciones y análisis estructurados estrictamente bajo la normativa vigente (NSR-10).
-					</p>
+			<!-- ═══ METRICS SECTION ═══ -->
+			<section class="border-y border-gray-100 bg-[#fbfdfd] py-12 px-6 scroll-reveal">
+				<div class="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+					<div>
+						<div class="metric-number text-3xl md:text-4xl font-bold text-ea-blue font-display" data-target="150" data-prefix="+" data-suffix="">+150</div>
+						<div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mt-1">Estructuras Evaluadas</div>
+					</div>
+					<div>
+						<div class="text-3xl md:text-4xl font-bold text-ea-blue font-display">NSR-10</div>
+						<div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mt-1">Cumplimiento Estricto</div>
+					</div>
+					<div>
+						<div class="text-3xl md:text-4xl font-bold text-ea-blue font-display">Bogotá</div>
+						<div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mt-1">Sede Principal</div>
+					</div>
+					<div>
+						<div class="metric-number text-3xl md:text-4xl font-bold text-ea-blue font-display" data-target="10" data-prefix="+" data-suffix=" Años">+10 Años</div>
+						<div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mt-1">De Experiencia Técnica</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ═══ SERVICES SECTION ═══ -->
+			<section class="py-24 px-6 max-w-[1200px] mx-auto">
+				<div class="mb-16 text-center md:text-left md:flex justify-between items-end scroll-reveal">
+					<div>
+						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">
+							Servicios Especializados
+						</h2>
+						<p class="mt-3 text-gray-500 font-light max-w-2xl text-[17px]">
+							Intervenciones y análisis estructurados estrictamente bajo la normativa NSR-10 y decretos vigentes.
+						</p>
+					</div>
+					<a href="/servicios" class="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-ea-blue hover:text-[#0f5c8d] mt-4 md:mt-0 transition-colors">
+						Ver todos los servicios
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+					</a>
 				</div>
 
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
-						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Vulnerabilidad Sísmica</h3>
-						<p class="text-[#898989] font-light leading-relaxed grow text-[16px]">
-							Evaluación del desempeño estructural de edificaciones existentes. Desarrollo de modelos matemáticos y levantamientos de alta precisión.
+				<!-- Service cards with anime.js stagger hook -->
+				<div class="service-card-grid grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="service-card cal-shadow bg-white rounded-2xl p-8 flex flex-col min-h-[300px] hover:-translate-y-1 transition-transform duration-300">
+						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
+							<Fragment set:html={icons["shield-check"]} />
+						</div>
+						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Vulnerabilidad Sísmica</h3>
+						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
+							Evaluación del desempeño estructural de edificaciones existentes. Desarrollo de modelos matemáticos analíticos en software especializado y levantamientos geométricos de alta precisión.
 						</p>
+						<a href="/servicios/vulnerabilidad-sismica/" class="text-xs font-bold text-ea-blue hover:text-[#0f5c8d] inline-flex items-center gap-1.5 mt-6 transition-colors group">
+							Ver detalles
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
 					</div>
 
-					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
-						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Patología Estructural</h3>
-						<p class="text-[#898989] font-light leading-relaxed grow text-[16px]">
-							Diagnóstico integral de fallas mecánicas y deterioro de materiales mediante ensayos destructivos y no destructivos supervisados.
+					<div class="service-card cal-shadow bg-white rounded-2xl p-8 flex flex-col min-h-[300px] hover:-translate-y-1 transition-transform duration-300">
+						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
+							<Fragment set:html={icons["microscope"]} />
+						</div>
+						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Patología Estructural</h3>
+						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
+							Diagnóstico integral de fallas mecánicas, grietas y deterioro de materiales mediante ensayos no destructivos (esclerometría, ultrasonido) y destructivos (extracción de núcleos).
 						</p>
+						<a href="/servicios/patologia-estructural/" class="text-xs font-bold text-ea-blue hover:text-[#0f5c8d] inline-flex items-center gap-1.5 mt-6 transition-colors group">
+							Ver detalles
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
 					</div>
 
-					<div class="shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-xl p-8 flex flex-col min-h-[280px]">
-						<h3 class="text-[24px] font-bold leading-[1.3] text-[#242424] mb-3 tracking-tight font-sans">Reforzamiento</h3>
-						<p class="text-[#898989] font-light leading-relaxed grow text-[16px]">
-							Diseño técnico de repotenciación y rehabilitación estructural, optimizando viabilidad económica y operacional.
+					<div class="service-card cal-shadow bg-white rounded-2xl p-8 flex flex-col min-h-[300px] hover:-translate-y-1 transition-transform duration-300">
+						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
+							<Fragment set:html={icons["wrench"]} />
+						</div>
+						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Reforzamiento Estructural</h3>
+						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
+							Diseño técnico y memorias de cálculo detalladas para la rehabilitación, reforzamiento e incremento de rigidez de edificaciones que no cumplen con la normatividad actual.
 						</p>
+						<a href="/servicios/reforzamiento-estructural/" class="text-xs font-bold text-ea-blue hover:text-[#0f5c8d] inline-flex items-center gap-1.5 mt-6 transition-colors group">
+							Ver detalles
+							<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
 					</div>
 				</div>
 			</section>
 			
-			<!-- Methodology / Trust Section -->
-			<section class="py-24 border-t border-[#f5f5f5]">
-				<div class="flex flex-col md:flex-row gap-16 items-center">
-					<div class="w-full md:w-1/2 aspect-video shadow-[rgba(19,19,22,0.07)_0px_1px_5px_-4px,rgba(34,42,53,0.08)_0px_0px_0px_1px,rgba(34,42,53,0.05)_0px_4px_8px_0px] bg-white rounded-2xl p-4 md:p-8 flex items-center justify-center">
-						<div class="text-[#898989] text-[14px] font-mono border border-dashed border-[#898989]/20 rounded-xl w-full h-full flex flex-col items-center justify-center bg-[#f9f9f9] gap-4">
-							<div class="grid grid-cols-4 grid-rows-3 gap-2 w-1/2 h-1/2 opacity-30">
-								<div class="border border-[#242424] col-span-2 row-span-2"></div>
-								<div class="border border-[#242424]"></div>
-								<div class="border border-[#242424]"></div>
-								<div class="border border-[#242424] col-span-2"></div>
-								<div class="border border-[#242424] col-span-4"></div>
-							</div>
-							<span>[Modelo Computacional]</span>
-						</div>
+			<!-- ═══ METHODOLOGY & FEM DIAGRAM ═══ -->
+			<section class="py-24 px-6 bg-[#fbfdfd] border-y border-gray-100">
+				<div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-16 items-center">
+					
+					<!-- Animated SVG FEM diagram with Anime.js path drawing -->
+					<div class="w-full lg:w-1/2 aspect-[4/3] cal-shadow bg-white rounded-2xl p-6 flex items-center justify-center relative overflow-hidden border border-gray-100 scroll-reveal">
+						<div class="absolute inset-0 blueprint-grid opacity-30 pointer-events-none"></div>
+						
+						<svg id="fem-diagram" viewBox="0 0 500 300" class="w-full h-full relative z-10" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="fem-stress" x1="0%" y1="100%" x2="0%" y2="0%">
+									<stop offset="0%" stop-color="#126DA6" />
+									<stop offset="50%" stop-color="#3ab7bf" />
+									<stop offset="90%" stop-color="#ea580c" />
+									<stop offset="100%" stop-color="#ef4444" />
+								</linearGradient>
+							</defs>
+							
+							<!-- Grid Lines -->
+							<g stroke="rgba(18, 110, 166, 0.06)" stroke-width="1">
+								<line x1="30" y1="260" x2="470" y2="260" />
+								<line x1="30" y1="180" x2="470" y2="180" />
+								<line x1="30" y1="100" x2="470" y2="100" />
+								<line x1="100" y1="20" x2="100" y2="280" />
+								<line x1="250" y1="20" x2="250" y2="280" />
+								<line x1="400" y1="20" x2="400" y2="280" />
+							</g>
+							
+							<!-- Ground Line -->
+							<line x1="40" y1="260" x2="460" y2="260" stroke="#126DA6" stroke-width="2" />
+							
+							<!-- Columns -->
+							<g stroke="rgba(18, 110, 166, 0.35)" stroke-width="4" stroke-linecap="round">
+								<line x1="100" y1="260" x2="100" y2="100" />
+								<line x1="250" y1="260" x2="250" y2="100" />
+								<line x1="400" y1="260" x2="400" y2="100" />
+								<line x1="100" y1="180" x2="400" y2="180" />
+								<line x1="100" y1="100" x2="400" y2="100" />
+							</g>
+							
+							<!-- Diagonal braces (stress gradient) -->
+							<g stroke="url(#fem-stress)" stroke-width="3" stroke-linecap="round">
+								<line x1="100" y1="260" x2="250" y2="180" />
+								<line x1="250" y1="260" x2="100" y2="180" />
+								<line x1="250" y1="260" x2="400" y2="180" />
+								<line x1="400" y1="260" x2="250" y2="180" />
+								<line x1="100" y1="180" x2="250" y2="100" />
+								<line x1="250" y1="180" x2="100" y2="100" />
+								<line x1="250" y1="180" x2="400" y2="100" />
+								<line x1="400" y1="180" x2="250" y2="100" />
+							</g>
+
+							<!-- Deflected shape -->
+							<g stroke="#ea580c" stroke-width="1.5" stroke-dasharray="3,3" fill="none" opacity="0.8">
+								<path d="M 100,260 Q 115,180 125,100" />
+								<path d="M 250,260 Q 265,180 275,100" />
+								<path d="M 400,260 Q 415,180 425,100" />
+								<line x1="125" y1="100" x2="425" y2="100" />
+								<line x1="115" y1="180" x2="415" y2="180" />
+							</g>
+							
+							<!-- Nodes -->
+							<g fill="#3ab7bf" stroke="#ffffff" stroke-width="1.5">
+								<polygon points="94,260 106,260 100,252" fill="#126DA6" />
+								<polygon points="244,260 256,260 250,252" fill="#126DA6" />
+								<polygon points="394,260 406,260 400,252" fill="#126DA6" />
+								<circle cx="100" cy="180" r="5" />
+								<circle cx="250" cy="180" r="5" />
+								<circle cx="400" cy="180" r="5" />
+								<circle cx="100" cy="100" r="5" fill="#ef4444" />
+								<circle cx="250" cy="100" r="5" fill="#ef4444" />
+								<circle cx="400" cy="100" r="5" fill="#ef4444" />
+							</g>
+							
+							<!-- Annotations -->
+							<g font-family="monospace" font-size="8" fill="#64748b">
+								<text x="35" y="35" fill="rgba(18, 110, 166, 0.7)">[ANÁLISIS DE ELEMENTOS FINITOS]</text>
+								<text x="35" y="48" fill="#ef4444">DEFORMADA BAJO SISMO (S_x = 0.35g)</text>
+								<text x="35" y="61">MODELO MATEMÁTICO: NSR-10 TITULO A</text>
+								<text x="290" y="235">F = 250 kN</text>
+								<text x="290" y="248">Vulnerabilidad: Moderada</text>
+							</g>
+						</svg>
 					</div>
-					<div class="w-full md:w-1/2 space-y-8">
-						<h2 class="text-[32px] md:text-[40px] font-bold leading-[1.1] text-[#242424] tracking-tight font-sans">
-							Rigurosidad Normativa
+					
+					<!-- Methodology content -->
+					<div class="w-full lg:w-1/2 space-y-8 scroll-reveal">
+						<h2 class="text-3xl md:text-[40px] font-bold leading-tight text-[#111111] tracking-tight">
+							Rigurosidad Normativa y Técnica
 						</h2>
-						<p class="text-[#898989] font-light leading-relaxed text-[16px]">
-							Basamos nuestras conclusiones en datos objetivos y metodologías estandarizadas. Garantizamos resoluciones precisas que sustentan jurídicamente el estado físico de la edificación.
+						<p class="text-gray-500 font-light leading-relaxed text-sm md:text-base">
+							Basamos nuestras conclusiones en datos objetivos recopilados mediante equipos de última generación y software de cálculo estructural avanzado. Aseguramos diagnósticos precisos que brindan respaldo técnico y legal.
 						</p>
-						<ul class="space-y-5 text-[#242424] font-medium text-[16px] list-none p-0">
-							<li class="flex items-center gap-4">
-								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Exploración física detallada
-							</li>
-							<li class="flex items-center gap-4">
-								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Pruebas y Ensayos de Materiales
-							</li>
-							<li class="flex items-center gap-4">
-								<span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Validación en Software Analítico
-							</li>
+						<ul class="space-y-4 text-[#111111] font-medium text-sm list-none p-0">
+							{[
+								'Exploración física y levantamiento patológico minucioso.',
+								'Ensayos de materiales destructivos y no destructivos.',
+								'Modelado numérico y análisis estático lineal / no lineal.',
+								'Diseño de reforzamiento con optimización económica.',
+							].map(item => (
+								<li class="flex items-center gap-3">
+									<span class="flex-shrink-0 w-5 h-5 rounded-full bg-ea-blue/5 flex items-center justify-center text-ea-blue">
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+									</span>
+									{item}
+								</li>
+							))}
 						</ul>
 					</div>
 				</div>
 			</section>
 
+			<!-- ═══ PROYECTOS RECIENTES ═══ -->
+			{latestProyectos.length > 0 && (
+				<section class="py-24 px-6 max-w-[1200px] mx-auto">
+					<div class="mb-16 text-center md:text-left md:flex justify-between items-end scroll-reveal">
+						<div>
+							<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">
+								Proyectos Recientes
+							</h2>
+							<p class="mt-3 text-gray-500 font-light max-w-2xl text-[17px]">
+								Garantizando estabilidad y seguridad en proyectos residenciales, industriales y comerciales en Bogotá.
+							</p>
+						</div>
+						<a href="/proyectos" class="inline-flex items-center gap-2 text-sm font-semibold text-ea-blue hover:text-[#0f5c8d] mt-4 md:mt-0 transition-colors">
+							Ver todos
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
+					</div>
+
+					<div class="animated-list grid grid-cols-1 md:grid-cols-3 gap-8">
+						{latestProyectos.map((proyecto) => (
+							<a href={`/proyectos/${proyecto.id}/`} class="animated-list-item group block no-underline">
+								<div class="overflow-hidden rounded-2xl bg-gray-100 aspect-video mb-4 cal-shadow">
+									{proyecto.data.heroImage ? (
+										<img src={proyecto.data.heroImage.src} alt={proyecto.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+									) : (
+										<div class="w-full h-full blueprint-grid opacity-30 flex items-center justify-center text-gray-300 text-sm">[Proyecto]</div>
+									)}
+								</div>
+								<h4 class="font-bold text-[#111111] text-lg leading-tight group-hover:text-ea-blue transition-colors mb-2">{proyecto.data.title}</h4>
+								<p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{proyecto.data.description}</p>
+							</a>
+						))}
+					</div>
+				</section>
+			)}
+
+			<!-- ═══ BLOG ARTICLES ═══ -->
+			{latestBlog.length > 0 && (
+				<section class="py-24 px-6 border-t border-gray-100 max-w-[1200px] mx-auto">
+					<div class="mb-16 text-center scroll-reveal">
+						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">Artículos Técnicos</h2>
+						<p class="mt-3 text-gray-500 font-light max-w-2xl mx-auto text-[17px]">
+							Divulgación en patología del concreto, sismorresistencia y mejores prácticas de construcción.
+						</p>
+					</div>
+					<div class="animated-list grid grid-cols-1 md:grid-cols-2 gap-12">
+						{latestBlog.map((post) => (
+							<a href={`/blog/${post.id}/`} class="animated-list-item group flex flex-col md:flex-row gap-6 no-underline">
+								<div class="w-full md:w-2/5 aspect-video md:aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 cal-shadow shrink-0">
+									{post.data.heroImage ? (
+										<img src={post.data.heroImage.src} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+									) : (
+										<div class="w-full h-full blueprint-grid opacity-30 flex items-center justify-center text-gray-300">[Imagen]</div>
+									)}
+								</div>
+								<div class="flex flex-col justify-center">
+									<span class="text-[11px] font-bold text-ea-blue uppercase tracking-widest mb-2 block">
+										{new Date(post.data.pubDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+									</span>
+									<h4 class="font-bold text-[#111111] text-xl leading-tight group-hover:text-ea-blue transition-colors mb-2">{post.data.title}</h4>
+									<p class="text-gray-500 text-xs line-clamp-2 leading-relaxed mb-4">{post.data.description}</p>
+									<span class="text-xs font-bold text-[#111111] inline-flex items-center gap-1 group-hover:text-ea-blue transition-colors">
+										Leer artículo
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+									</span>
+								</div>
+							</a>
+						))}
+					</div>
+				</section>
+			)}
+
+			<!-- ═══ CONTACT FORM ═══ -->
+			<section id="cotizar" class="py-24 px-6 border-t border-gray-100 bg-[#fbfdfd]">
+				<div class="max-w-[800px] mx-auto cal-shadow bg-white rounded-3xl p-8 md:p-12 border border-gray-100 relative overflow-hidden scroll-reveal">
+					<div class="absolute top-0 right-0 w-48 h-48 blueprint-grid-dense opacity-20 pointer-events-none rounded-bl-full"></div>
+					
+					<div class="relative z-10 text-center mb-10">
+						<h2 class="text-3xl font-bold text-[#111111] tracking-tight">¿Necesita un Diagnóstico Especializado?</h2>
+						<p class="mt-3 text-gray-500 font-light text-[15px]">Complete el formulario y un ingeniero especialista analizará su caso.</p>
+					</div>
+
+					<form class="space-y-6" onsubmit={`event.preventDefault(); window.open('https://wa.me/573000000000?text=' + encodeURIComponent('Hola, mi nombre es ' + document.getElementById('name').value + '. Requiero consultoría para: ' + document.getElementById('details').value + ' en ' + document.getElementById('city').value + '.'));`}>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+							<div>
+								<label for="name" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Nombre Completo</label>
+								<input type="text" id="name" required placeholder="Ej: Ing. Carlos Pérez" class="w-full h-11 px-4 text-sm bg-[#fcfdff] rounded-xl border border-gray-200 outline-none focus:border-ea-blue focus:ring-1 focus:ring-ea-blue transition-all"/>
+							</div>
+							<div>
+								<label for="phone" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Teléfono</label>
+								<input type="tel" id="phone" required placeholder="Ej: +57 300 123 4567" class="w-full h-11 px-4 text-sm bg-[#fcfdff] rounded-xl border border-gray-200 outline-none focus:border-ea-blue focus:ring-1 focus:ring-ea-blue transition-all"/>
+							</div>
+						</div>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+							<div>
+								<label for="city" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Ciudad / Proyecto</label>
+								<input type="text" id="city" required placeholder="Ej: Bogotá, D.C." class="w-full h-11 px-4 text-sm bg-[#fcfdff] rounded-xl border border-gray-200 outline-none focus:border-ea-blue focus:ring-1 focus:ring-ea-blue transition-all"/>
+							</div>
+							<div>
+								<label for="service-type" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Servicio Requerido</label>
+								<select id="service-type" class="w-full h-11 px-4 text-sm bg-[#fcfdff] rounded-xl border border-gray-200 outline-none focus:border-ea-blue focus:ring-1 focus:ring-ea-blue transition-all">
+									<option>Vulnerabilidad Sísmica</option>
+									<option>Patología Estructural</option>
+									<option>Diseño de Reforzamiento</option>
+									<option>Diseño Estructural Nuevo</option>
+									<option>Otro Diagnóstico Especializado</option>
+								</select>
+							</div>
+						</div>
+						<div>
+							<label for="details" class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Detalles del Problema</label>
+							<textarea id="details" rows="4" required placeholder="Ej: Presenta fisuras en vigas de concreto del segundo piso, edificación residencial construida en 1995..." class="w-full p-4 text-sm bg-[#fcfdff] rounded-xl border border-gray-200 outline-none focus:border-ea-blue focus:ring-1 focus:ring-ea-blue transition-all"></textarea>
+						</div>
+						<div class="text-center pt-4">
+							<button type="submit" class="cal-button-primary cta-button-animated text-sm font-semibold h-12 px-8 w-full sm:w-auto">
+								Enviar Solicitud vía WhatsApp
+							</button>
+						</div>
+					</form>
+				</div>
+			</section>
+
 		</main>
 		<Footer />
+		<ScrollAnimations />
 	</body>
 </html>

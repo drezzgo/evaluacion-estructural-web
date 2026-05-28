@@ -1,36 +1,178 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import ScrollAnimations from '../components/ScrollAnimations.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const WHATSAPP_NUMBER = '573000000000';
+const WHATSAPP_MSG = encodeURIComponent('Hola, quisiera solicitar información sobre sus servicios de evaluación estructural.');
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`;
 ---
 
-<Layout
-	title="Nuestra Trayectoria"
-	description="Especialistas en ingeniería estructural y consultoría técnica."
-	pubDate={new Date('April 20 2026')}
-	heroImage={AboutHeroImage}
->
-	<p>
-		<strong>Evaluación Estructural SAS</strong> es una firma de consultoría especializada en ingeniería civil y patología estructural. Nuestra misión es garantizar la seguridad y durabilidad de las edificaciones mediante diagnósticos precisos y soluciones técnicas innovadoras.
-	</p>
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`Sobre Nosotros | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		<style>
+			.scroll-reveal, .pillar-card, .timeline-item { opacity: 0; }
+			.timeline-line { transform-origin: top center; }
+		</style>
+	</head>
+	<body class="antialiased bg-white text-[#242424]">
+		<Header />
+		
+		<main class="w-full">
+			
+			<!-- ═══ BLUEPRINT HERO HEADER ═══ -->
+			<section class="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-24 flex flex-col items-center text-center px-6">
+				<div class="absolute inset-0 blueprint-grid opacity-60 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]"></div>
+				<!-- Gradient bottom fade -->
+				<div class="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
 
-	<p>
-		Con años de experiencia en el mercado colombiano, nos hemos consolidado como referentes en la evaluación de vulnerabilidad sísmica, siguiendo estrictamente los lineamientos de la normativa NSR-10. Contamos con un equipo de ingenieros altamente calificados y equipos de última tecnología para ensayos no destructivos.
-	</p>
+				<div class="relative z-10 max-w-[1200px] mx-auto flex flex-col items-center">
+					<!-- Large isotype with glow -->
+					<div class="relative mb-8 animate-fade-in-up">
+						<div class="absolute inset-0 rounded-full bg-ea-blue/10 blur-2xl scale-150 animate-pulse"></div>
+						<img src="/favicon.svg" alt="Evaluación Estructural SAS Isotype" class="relative h-24 w-24 hover:scale-105 hover:rotate-3 transition-all duration-500 drop-shadow-xl"/>
+					</div>
 
-	<h2>Nuestro Compromiso</h2>
-	<p>
-		Entendemos que la integridad estructural de una edificación es fundamental para la seguridad de sus ocupantes. Por ello, abordamos cada proyecto con la máxima rigurosidad técnica, desde el levantamiento físico inicial hasta la entrega de planos de reforzamiento y memorias de cálculo detalladas.
-	</p>
+					<div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-ea-blue bg-ea-blue/5 border border-ea-blue/10 rounded-full mb-6 animate-fade-in-up delay-75">
+						Nuestra Trayectoria
+					</div>
+					
+					<h1 class="text-4xl md:text-[56px] font-bold leading-tight text-[#111111] max-w-4xl tracking-tighter font-display animate-fade-in-up delay-100">
+						Garantizando la Seguridad de la <span class="bg-gradient-to-r from-ea-blue to-ea-light-blue bg-clip-text text-transparent">Infraestructura</span>
+					</h1>
+					
+					<p class="mt-6 text-base md:text-lg font-light leading-relaxed text-gray-500 max-w-2xl tracking-[-0.2px] animate-fade-in-up delay-150">
+						Conozca la historia, los valores y el compromiso técnico de la firma líder en patología de materiales y vulnerabilidad sísmica en Bogotá, Colombia.
+					</p>
+				</div>
+			</section>
 
-	<h2>¿Por qué elegirnos?</h2>
-	<ul>
-		<li><strong>Precisión Técnica:</strong> Utilizamos software de modelado avanzado y equipos de medición certificados.</li>
-		<li><strong>Cumplimiento Normativo:</strong> Todos nuestros proyectos se rigen bajo la NSR-10 y decretos vigentes.</li>
-		<li><strong>Atención Personalizada:</strong> Entregamos informes claros y acompañamos a nuestros clientes en todo el proceso de legalización y obra.</li>
-		<li><strong>Transparencia:</strong> Basamos nuestros resultados en datos empíricos y evidencia física recolectada en campo.</li>
-	</ul>
+			<!-- ═══ IDENTITY SECTION ═══ -->
+			<section class="py-20 px-6 max-w-[1200px] mx-auto">
+				<div class="flex flex-col lg:flex-row gap-16 items-center">
+					<div class="w-full lg:w-1/2 space-y-6 scroll-reveal">
+						<h2 class="text-3xl md:text-4xl font-bold text-[#111111] tracking-tight">¿Quiénes Somos?</h2>
+						<p class="text-gray-500 font-light leading-relaxed text-base md:text-[17px]">
+							<strong>Evaluación Estructural SAS</strong> es una firma de consultoría especializada en ingeniería civil, diagnóstico estructural y patología de materiales. Nuestra misión es proveer diagnósticos de alta fidelidad técnica que sirvan como sustento objetivo ante curadurías, entidades gubernamentales y aseguradoras.
+						</p>
+						<p class="text-gray-500 font-light leading-relaxed text-base md:text-[17px]">
+							Con un equipo de ingenieros patólogos dedicados, abordamos cada proyecto combinando levantamientos físicos tradicionales, ensayos científicos avanzados de materiales y simulaciones en software de elementos finitos de última generación.
+						</p>
+					</div>
+					
+					<div class="w-full lg:w-1/2 scroll-reveal">
+						<div class="relative cal-shadow rounded-3xl overflow-hidden aspect-[4/3] bg-gray-100 border border-gray-100">
+							<img src={AboutHeroImage.src} alt="Modelado y diagnóstico de estructuras" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+							<div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur-md px-4 py-2 rounded-xl border border-gray-150 text-[11px] font-bold text-ea-blue tracking-wide uppercase">
+								Ensayos Técnicos en Campo
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-	<p>
-		Estamos ubicados estratégicamente para atender proyectos a nivel nacional, brindando soluciones eficaces tanto para edificaciones residenciales como comerciales e industriales.
-	</p>
-</Layout>
+			<!-- ═══ CORE PILLARS (Anime.js pillars-grid stagger) ═══ -->
+			<section class="py-24 px-6 bg-[#fbfdfd] border-y border-gray-100">
+				<div class="max-w-[1200px] mx-auto">
+					<div class="mb-16 text-center scroll-reveal">
+						<h2 class="text-3xl md:text-4xl font-bold text-[#111111] tracking-tight">Nuestros Pilares</h2>
+						<p class="mt-3 text-gray-500 font-light text-base max-w-xl mx-auto">La filosofía de trabajo que rige cada una de nuestras consultorías estructurales.</p>
+					</div>
+
+					<!-- pillars-grid → triggers anime.js stagger on .pillar-card -->
+					<div class="pillars-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+						{[
+							{ n: 1, title: 'Precisión Técnica', desc: 'Utilizamos software avanzado de modelado computacional y equipos de medición certificados internacionalmente.' },
+							{ n: 2, title: 'Normativa NSR-10', desc: 'Todos nuestros proyectos y diseños de reforzamiento se rigen bajo los títulos y lineamientos vigentes en la legislación nacional.' },
+							{ n: 3, title: 'Respaldo Jurídico', desc: 'Proveemos informes detallados que sustentan técnicamente el estado de la edificación, listos para trámites legales y notariales.' },
+							{ n: 4, title: 'Transparencia', desc: 'Nuestros diagnósticos se basan estrictamente en datos experimentales recolectados a través de pruebas de campo y laboratorios aliados.' },
+						].map(({ n, title, desc }) => (
+							<div class="pillar-card cal-shadow bg-white rounded-2xl p-8 flex flex-col items-start hover:-translate-y-1 transition-transform duration-300">
+								<span class="w-9 h-9 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center font-bold text-sm mb-6 font-display">{n}</span>
+								<h3 class="text-lg font-bold text-[#111111] mb-2 tracking-tight">{title}</h3>
+								<p class="text-gray-500 font-light text-xs leading-relaxed">{desc}</p>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<!-- ═══ ENGINEERING TIMELINE (Anime.js) ═══ -->
+			<section class="py-24 px-6 max-w-[1200px] mx-auto">
+				<div class="mb-20 text-center scroll-reveal">
+					<h2 class="text-3xl md:text-4xl font-bold text-[#111111] tracking-tight">Hitos de Nuestra Trayectoria</h2>
+					<p class="mt-3 text-gray-500 font-light text-base max-w-xl mx-auto">El camino que nos ha consolidado como referentes en diagnóstico estructural.</p>
+				</div>
+
+				<!-- timeline-container → triggers all Anime.js timeline animations -->
+				<div class="timeline-container relative max-w-3xl mx-auto">
+					<!-- Animated vertical line -->
+					<div class="timeline-line absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-ea-blue/30 via-ea-blue to-ea-light-blue -translate-x-1/2 pointer-events-none"></div>
+
+					{[
+						{ year: '2016', title: 'Fundación de la Firma', desc: 'Se establece Evaluación Estructural SAS en Bogotá, atendiendo solicitudes especializadas de levantamientos patológicos en conjuntos residenciales.', left: true },
+						{ year: '2019', title: 'Expansión de Portafolio', desc: 'Se incorporan los estudios de vulnerabilidad sísmica NSR-10 y peritajes técnicos para licencias de construcción ante curadurías.', left: false },
+						{ year: '2022', title: 'Adquisición Tecnológica', desc: 'Inversión en laboratorios de campo: esclerómetros digitales, pachómetros y escáneres de ultrasonido para concreto certificados.', left: true },
+						{ year: '2026', title: 'Consolidación Sectorial', desc: 'Superamos los 150 estudios estructurales de gran envergadura a nivel nacional, convirtiéndonos en referente consultor en Bogotá.', left: false },
+					].map(({ year, title, desc, left }) => (
+						<div class={`timeline-item relative flex flex-col md:flex-row gap-8 mb-16`}>
+							<div class="timeline-node absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-ea-blue border-4 border-white shadow -translate-x-1/2 z-10 top-2"></div>
+							
+							{left ? (
+								<>
+									<div class="w-full md:w-1/2 text-left md:text-right pl-12 md:pl-0 pr-0 md:pr-12 md:pt-0">
+										<div class="text-2xl font-bold text-ea-blue font-display">{year}</div>
+									</div>
+									<div class="w-full md:w-1/2 pl-12 md:pl-12">
+										<div class="cal-shadow bg-white rounded-2xl p-6 border border-gray-100">
+											<h4 class="font-bold text-[#111111] text-lg mb-2">{title}</h4>
+											<p class="text-gray-500 text-xs font-light leading-relaxed">{desc}</p>
+										</div>
+									</div>
+								</>
+							) : (
+								<>
+									<div class="w-full md:w-1/2 order-2 md:order-1 pl-12 md:pl-0 pr-0 md:pr-12">
+										<div class="cal-shadow bg-white rounded-2xl p-6 border border-gray-100 text-left md:text-right">
+											<h4 class="font-bold text-[#111111] text-lg mb-2">{title}</h4>
+											<p class="text-gray-500 text-xs font-light leading-relaxed">{desc}</p>
+										</div>
+									</div>
+									<div class="w-full md:w-1/2 order-1 md:order-2 pl-12 md:pl-12 md:pt-0">
+										<div class="text-2xl font-bold text-ea-blue font-display">{year}</div>
+									</div>
+								</>
+							)}
+						</div>
+					))}
+				</div>
+			</section>
+
+			<!-- ═══ CALL TO ACTION ═══ -->
+			<section class="py-24 px-6 border-t border-gray-100 bg-[#fbfdfd]">
+				<div class="max-w-[800px] mx-auto text-center space-y-6 scroll-reveal">
+					<h2 class="text-3xl font-bold text-[#111111] tracking-tight">¿Hablamos sobre su edificación?</h2>
+					<p class="text-gray-500 font-light text-base max-w-md mx-auto leading-relaxed">
+						Agende una reunión inicial con nuestros ingenieros consultores para evaluar su estructura.
+					</p>
+					<div class="pt-4">
+						<a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" class="cal-button-primary cta-button-animated text-sm font-semibold h-12 px-8">
+							Consultar con un Experto
+						</a>
+					</div>
+				</div>
+			</section>
+
+		</main>
+		<Footer />
+		<ScrollAnimations />
+	</body>
+</html>

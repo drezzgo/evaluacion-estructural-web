@@ -6,61 +6,105 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+interface Props {
+	title: string;
+	description: string;
+	pubDate?: Date;
+	updatedDate?: Date;
+	heroImage?: any;
+}
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <html lang="es">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={`${title} | Evaluación Estructural SAS`} description={description} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	</head>
 
-	<body class="bg-gray-50 text-gray-900 leading-relaxed">
+	<body class="antialiased bg-white text-[#242424] leading-relaxed">
 		<Header />
-		<main class="w-full max-w-4xl mx-auto px-4 py-12 md:py-20">
-			<article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-				<div class="w-full aspect-video overflow-hidden">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />}
+		
+		<main class="w-full max-w-4xl mx-auto px-6 py-12 md:py-20">
+			<article class="bg-white rounded-3xl overflow-hidden cal-shadow border border-gray-100">
+				
+				<!-- Hero Image with Blueprint grid underlay if none -->
+				<div class="w-full aspect-[21/9] overflow-hidden bg-gray-50 border-b border-gray-100 relative">
+					{heroImage ? (
+						<Image 
+							width={1200} 
+							height={514} 
+							src={heroImage} 
+							alt={title} 
+							class="w-full h-full object-cover hover:scale-101 transition-transform duration-500" 
+						/>
+					) : (
+						<div class="w-full h-full blueprint-grid opacity-20 flex items-center justify-center text-gray-300">
+							<!-- fallback grid decoration -->
+						</div>
+					)}
 				</div>
-				<div class="px-6 py-10 md:px-12 md:py-16">
+				
+				<div class="px-6 py-10 md:px-16 md:py-16">
 					<header class="mb-12 text-center">
 						<div class="flex flex-col items-center gap-2 mb-6">
-							<div class="text-sm font-medium text-gray-500 uppercase tracking-widest">
-								<FormattedDate date={pubDate} />
-							</div>
+							{
+								pubDate && (
+									<div class="text-xs font-bold text-ea-blue uppercase tracking-widest">
+										<FormattedDate date={pubDate} />
+									</div>
+								)
+							}
 							{
 								updatedDate && (
-									<div class="text-sm italic text-gray-400">
+									<div class="text-xs italic text-gray-400">
 										Actualizado el <FormattedDate date={updatedDate} />
 									</div>
 								)
 							}
 						</div>
-						<h1 class="text-4xl md:text-5xl font-extrabold text-[#111111] leading-tight mb-8">
+						<h1 class="text-3xl md:text-5xl font-bold text-[#111111] leading-tight mb-8 font-display tracking-tight">
 							{title}
 						</h1>
-						<hr class="w-24 h-1 mx-auto bg-[#242424] border-0 rounded-full" />
+						<hr class="w-20 h-1 mx-auto bg-ea-blue border-0 rounded-full" />
 					</header>
 
-					{/* Contenido del post */}
+					{/* Contenido dinámico del post */}
 					<div class="max-w-none 
-						[&>p]:mb-6 [&>p]:text-lg [&>p]:text-gray-600 
-						[&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mt-12 [&>h2]:mb-4 [&>h2]:text-[#111111]
-						[&>h3]:text-xl [&>h3]:font-bold [&>h3]:mt-8 [&>h3]:mb-3 [&>h3]:text-[#111111]
-						[&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-6 [&>ul]:text-gray-600
-						[&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-6 [&>ol]:text-gray-600
-						[&>li]:mb-2
-						[&>blockquote]:border-l-4 [&>blockquote]:border-[#242424] [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-gray-500 [&>blockquote]:my-8
-						[&>img]:rounded-xl [&>img]:shadow-md [&>img]:my-8
+						[&>p]:mb-6 [&>p]:text-base [&>p]:md:text-[17px] [&>p]:text-gray-600 [&>p]:font-light [&>p]:leading-relaxed
+						[&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mt-12 [&>h2]:mb-4 [&>h2]:text-[#111111] [&>h2]:font-display [&>h2]:tracking-tight
+						[&>h3]:text-xl [&>h3]:font-bold [&>h3]:mt-8 [&>h3]:mb-3 [&>h3]:text-[#111111] [&>h3]:font-display [&>h3]:tracking-tight
+						[&>ul]:list-none [&>ul]:pl-0 [&>ul]:mb-6 [&>ul]:text-gray-600 [&>ul]:font-light [&>ul]:space-y-3
+						[&>ul>li]:relative [&>ul>li]:pl-6 [&>ul>li]:text-sm [&>ul>li]:md:text-[15px]
+						[&>ul>li::before]:content-[''] [&>ul>li::before]:absolute [&>ul>li::before]:left-0 [&>ul>li::before]:top-[8px] [&>ul>li::before]:w-1.5 [&>ul>li::before]:h-1.5 [&>ul>li::before]:rounded-full [&>ul>li::before]:bg-ea-blue
+						[&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-6 [&>ol]:text-gray-600 [&>ol]:font-light [&>ol]:space-y-3 [&>ol>li]:text-sm [&>ol>li]:md:text-[15px]
+						[&>blockquote]:border-l-4 [&>blockquote]:border-ea-blue [&>blockquote]:bg-ea-blue/5 [&>blockquote]:p-6 [&>blockquote]:rounded-r-xl [&>blockquote]:italic [&>blockquote]:text-gray-700 [&>blockquote]:my-8 [&>blockquote]:text-sm
+						[&>img]:rounded-xl [&>img]:cal-shadow [&>img]:my-8
 						[&>hr]:my-12 [&>hr]:border-gray-100
 						[&>pre]:p-6 [&>pre]:rounded-xl [&>pre]:bg-gray-900 [&>pre]:text-gray-100 [&>pre]:overflow-x-auto [&>pre]:my-8
-						[&>code]:bg-gray-100 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-sm [&>code]:font-mono">
+						[&>code]:bg-gray-50 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-xs [&>code]:font-mono [&>code]:text-ea-blue [&>code]:border [&>code]:border-ea-blue/10
+						[&>a]:text-ea-blue [&>a]:font-semibold [&>a]:hover:underline">
 						<slot />
+					</div>
+					
+					<!-- Back to previous navigation -->
+					<div class="mt-16 pt-8 border-t border-gray-100 flex justify-between">
+						<button onclick="window.history.back()" class="inline-flex items-center gap-2 text-xs font-bold text-[#111111] hover:text-ea-blue transition-colors uppercase tracking-wider cursor-pointer">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+							Volver
+						</button>
+						<a href="/servicios" class="inline-flex items-center gap-2 text-xs font-bold text-ea-blue hover:text-[#0f5c8d] transition-colors uppercase tracking-wider no-underline">
+							Servicios
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
 					</div>
 				</div>
 			</article>
 		</main>
+		
 		<Footer />
 	</body>
 </html>

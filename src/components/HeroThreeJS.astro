@@ -1,0 +1,220 @@
+---
+// HeroThreeJS.astro
+// 3D animated structural building wireframe using Three.js (CDN)
+// Properly handles Astro View Transitions via astro:page-load / astro:before-swap
+---
+
+<div id="three-hero-canvas" class="absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+
+<script>
+// Guard: only inject the Three.js module loader once per session
+const THREE_SCRIPT_ID = 'three-module-loader';
+
+function initThreeHero() {
+  const container = document.getElementById('three-hero-canvas');
+  if (!container) return;
+
+  // Clean any previous canvas left in the container
+  container.innerHTML = '';
+
+  // Mark as initialized so cleanup can target it
+  let animFrameId: number;
+  let resizeObserver: ResizeObserver;
+
+  const moduleScript = document.createElement('script');
+  moduleScript.type = 'module';
+  moduleScript.id = 'three-runtime-' + Date.now();
+  moduleScript.textContent = `
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
+
+    const container = document.getElementById('three-hero-canvas');
+    if (!container || container.dataset.initialized === 'true') return;
+    container.dataset.initialized = 'true';
+
+    // ── RENDERER ──
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth || window.innerWidth, container.clientHeight || window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    // ── SCENE & CAMERA ──
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      50,
+      (container.clientWidth || window.innerWidth) / (container.clientHeight || window.innerHeight),
+      0.1, 200
+    );
+    camera.position.set(12, 8, 18);
+    camera.lookAt(0, 2, 0);
+
+    // ── COLORS ──
+    const BLUE      = new THREE.Color(0x126DA6);
+    const LIGHT     = new THREE.Color(0x3ab7bf);
+    const RED       = new THREE.Color(0xef4444);
+
+    // ── HELPERS ──
+    function makeColumn(x, z, h) {
+      const geo = new THREE.CylinderGeometry(0.08, 0.08, h, 6);
+      const mat = new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0.65 });
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(x, h / 2, z);
+      return m;
+    }
+
+    function makeBeam(a, b, color) {
+      const dir = new THREE.Vector3().subVectors(b, a);
+      const len = dir.length();
+      const geo = new THREE.CylinderGeometry(0.04, 0.04, len, 4);
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5 });
+      const m = new THREE.Mesh(geo, mat);
+      m.position.copy(new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5));
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+      return m;
+    }
+
+    function makeSlab(y, w, d) {
+      const geo = new THREE.BoxGeometry(w, 0.1, d);
+      const mat = new THREE.MeshBasicMaterial({ color: LIGHT, transparent: true, opacity: 0.15 });
+      const m = new THREE.Mesh(geo, mat);
+      m.position.y = y;
+      return m;
+    }
+
+    // ── BUILDING ──
+    const building = new THREE.Group();
+    const colX = [-3, 0, 3];
+    const colZ = [-2, 2];
+    const floors = [0, 2.5, 5, 7.5, 10];
+
+    colX.forEach(x => colZ.forEach(z => building.add(makeColumn(x, z, 10))));
+
+    floors.forEach((y, i) => {
+      if (i === 0) return;
+      building.add(makeSlab(y, 6.2, 4.2));
+      colX.slice(0, -1).forEach((x, idx) =>
+        colZ.forEach(z =>
+          building.add(makeBeam(new THREE.Vector3(x, y, z), new THREE.Vector3(colX[idx + 1], y, z), BLUE))
+        )
+      );
+      colZ.slice(0, -1).forEach((z, idx) =>
+        colX.forEach(x =>
+          building.add(makeBeam(new THREE.Vector3(x, y, z), new THREE.Vector3(x, y, colZ[idx + 1]), BLUE))
+        )
+      );
+    });
+
+    // Cross braces
+    floors.slice(0, -1).forEach((y, i) => {
+      const yTop = floors[i + 1];
+      building.add(makeBeam(new THREE.Vector3(-3, y, -2), new THREE.Vector3(0, yTop, -2), BLUE));
+      building.add(makeBeam(new THREE.Vector3(0, y, -2), new THREE.Vector3(3, yTop, -2), BLUE));
+    });
+
+    building.position.y = -5;
+    scene.add(building);
+
+    // ── GROUND GRID ──
+    const grid = new THREE.GridHelper(30, 24, 0x126DA6, 0x126DA6);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.05;
+    grid.position.y = -5;
+    scene.add(grid);
+
+    // ── SEISMIC RINGS ──
+    const rings = [];
+    for (let i = 0; i < 4; i++) {
+      const geo = new THREE.RingGeometry(0.5, 0.65, 64);
+      const mat = new THREE.MeshBasicMaterial({ color: LIGHT, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+      const r = new THREE.Mesh(geo, mat);
+      r.rotation.x = -Math.PI / 2;
+      r.position.y = -4.92;
+      r.userData.phase = i / 4;
+      scene.add(r);
+      rings.push(r);
+    }
+
+    // ── PARTICLES ──
+    const PCOUNT = 55;
+    const pPos = new Float32Array(PCOUNT * 3);
+    for (let i = 0; i < PCOUNT; i++) {
+      pPos[i * 3]     = (Math.random() - 0.5) * 8;
+      pPos[i * 3 + 1] = Math.random() * 12 - 5;
+      pPos[i * 3 + 2] = (Math.random() - 0.5) * 5;
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({ color: LIGHT, size: 0.06, transparent: true, opacity: 0.55 });
+    const particles = new THREE.Points(pGeo, pMat);
+    scene.add(particles);
+
+    // ── ANIMATION ──
+    let t = 0;
+    let camAngle = 0;
+    let swayDir = 1;
+    let swayA = 0;
+    let animId;
+
+    function loop() {
+      animId = requestAnimationFrame(loop);
+      t += 0.016;
+
+      // Camera orbit
+      camAngle += 0.0018;
+      camera.position.x = Math.sin(camAngle) * 20;
+      camera.position.z = Math.cos(camAngle) * 20;
+      camera.position.y = 8 + Math.sin(t * 0.3) * 0.5;
+      camera.lookAt(0, 2, 0);
+
+      // Sway
+      swayA += 0.003 * swayDir;
+      if (Math.abs(swayA) > 0.018) swayDir *= -1;
+      building.rotation.z = swayA;
+
+      // Rings
+      rings.forEach(r => {
+        const p = ((t * 0.45 + r.userData.phase) % 1);
+        r.scale.setScalar(1 + p * 18);
+        r.material.opacity = (1 - p) * 0.42;
+      });
+
+      // Particles rise
+      const pa = pGeo.attributes.position.array;
+      for (let i = 0; i < PCOUNT; i++) {
+        pa[i * 3 + 1] += 0.007;
+        if (pa[i * 3 + 1] > 6) pa[i * 3 + 1] = -5;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+      pMat.opacity = 0.4 + Math.sin(t * 1.5) * 0.15;
+
+      renderer.render(scene, camera);
+    }
+    loop();
+
+    // ── RESIZE ──
+    const ro = new ResizeObserver(() => {
+      const w = container.clientWidth, h = container.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
+    ro.observe(container);
+
+    // ── CLEANUP on next Astro navigation ──
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(animId);
+      ro.disconnect();
+      renderer.dispose();
+      container.dataset.initialized = '';
+    }, { once: true });
+  `;
+
+  document.head.appendChild(moduleScript);
+}
+
+// Fire on every page load (initial + View Transitions navigations)
+document.addEventListener('astro:page-load', () => {
+  // Small delay to ensure the DOM is ready after swap
+  requestAnimationFrame(initThreeHero);
+});
+</script>

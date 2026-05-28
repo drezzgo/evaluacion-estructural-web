@@ -3,34 +3,42 @@ import { SITE_TITLE } from '../consts';
 const today = new Date();
 ---
 
-<footer class="bg-white border-t border-gray-100 px-6 py-12 md:py-16 text-center">
-	<div class="max-w-[1200px] mx-auto">
+<footer class="bg-white border-t border-gray-100 px-6 py-12 md:py-16">
+	<div class="max-w-300 mx-auto">
 		<div class="flex flex-col md:flex-row justify-between items-center gap-8">
-			<div class="text-left">
-				<div class="text-[15px] font-bold text-[#111111] mb-2">{SITE_TITLE}</div>
-				<p class="text-sm text-gray-500">
-					&copy; {today.getFullYear()} Todos los derechos reservados.
-				</p>
+			
+			<!-- Footer Logo & Copyright -->
+			<div class="flex items-center gap-3 text-left">
+				<img src="/favicon.svg" alt="Evaluación Estructural SAS Isotype" class="h-9 w-9" />
+				<div>
+					<div class="text-[15px] font-bold text-[#111111] leading-none mb-1.5 font-display tracking-tight">{SITE_TITLE}</div>
+					<p class="text-xs text-gray-400">
+						&copy; {today.getFullYear()} Todos los derechos reservados.
+					</p>
+				</div>
 			</div>
 
+			<!-- Footer Social Icons -->
 			<div class="flex items-center gap-6">
-				<a href="#" class="text-gray-400 hover:text-[#111111] transition-colors" aria-label="LinkedIn">
+				<a href="#" class="text-gray-400 hover:text-ea-blue transition-colors" aria-label="LinkedIn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
 				</a>
-				<a href="#" class="text-gray-400 hover:text-[#111111] transition-colors" aria-label="Instagram">
+				<a href="#" class="text-gray-400 hover:text-ea-blue transition-colors" aria-label="Instagram">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
 				</a>
-				<a href="#" class="text-gray-400 hover:text-[#111111] transition-colors" aria-label="Twitter">
+				<a href="#" class="text-gray-400 hover:text-ea-blue transition-colors" aria-label="Twitter">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
 				</a>
 			</div>
 		</div>
 		
-		<div class="mt-12 pt-8 border-t border-gray-50 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm text-gray-400">
-			<a href="/" class="hover:text-[#111111] transition-colors no-underline">Inicio</a>
-			<a href="/servicios" class="hover:text-[#111111] transition-colors no-underline">Servicios</a>
-			<a href="/blog" class="hover:text-[#111111] transition-colors no-underline">Proyectos</a>
-			<a href="/about" class="hover:text-[#111111] transition-colors no-underline">Nosotros</a>
+		<!-- Footer links navigation -->
+		<div class="mt-12 pt-8 border-t border-gray-50 flex flex-wrap justify-start gap-x-8 gap-y-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+			<a href="/" class="hover:text-ea-blue transition-colors no-underline">Inicio</a>
+			<a href="/servicios" class="hover:text-ea-blue transition-colors no-underline">Servicios</a>
+			<a href="/proyectos" class="hover:text-ea-blue transition-colors no-underline">Proyectos</a>
+			<a href="/blog" class="hover:text-ea-blue transition-colors no-underline">Blog</a>
+			<a href="/about" class="hover:text-ea-blue transition-colors no-underline">Nosotros</a>
 		</div>
 	</div>
 </footer>
