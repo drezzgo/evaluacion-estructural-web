@@ -1,0 +1,80 @@
+---
+/**
+ * simulador.astro
+ * Página del simulador 3D educativo de fallas estructurales en muros.
+ * El componente React se carga con client:only="react" para evitar SSR
+ * con el Canvas WebGL (Three.js requiere el DOM del navegador).
+ *
+ * IMPORTANTE: Esta página es standalone — importa global.css directamente
+ * en lugar de usar BaseHead, ya que necesita pantalla completa sin el
+ * layout del sitio principal.
+ */
+
+import '../styles/global.css';
+import { WallSimulatorApp } from '../features/wall-simulator/components/WallSimulatorApp.tsx';
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.ico" />
+
+  <title>Simulador Estructural | Evaluación Estructural SAS</title>
+  <meta
+    name="description"
+    content="Simulador educativo de fallas estructurales en muros. Visualiza en tiempo real cómo el material, las dimensiones y las cargas afectan la integridad de un muro."
+  />
+  <meta name="robots" content="noindex" />
+
+  <!-- Inter: fuente de body para la UI del simulador -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* Simulador: pantalla completa sin scroll de página */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #111111;
+      /* Evita FOUC: establece fondo oscuro antes de que React hidrate */
+      color: #ffffff;
+    }
+    #simulator-root {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Spinner mientras React hidrata el componente */
+    #simulator-root:empty::after {
+      content: 'Cargando simulador…';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-family: Inter, sans-serif;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div id="simulator-root">
+    <!-- client:only="react" garantiza que Astro NO intente renderizar en el servidor.
+         Esencial para cualquier componente que use WebGL, window, o APIs del navegador. -->
+    <WallSimulatorApp client:only="react" />
+  </div>
+</body>
+</html>

@@ -1,114 +1,187 @@
 /**
  * @file calculateSafetyFactor.ts
- * @description Cálculo del factor de seguridad simplificado del muro.
+ * @description Motor educativo de cálculo del factor de seguridad (FS).
  *
- * ⚠️ AVISO EDUCATIVO: Esta función implementa mecánica de materiales
- * elemental (σ = P/A) con fines pedagógicos. El análisis estructural
- * real considera combinaciones de carga, factores de amplificación,
- * reducción de capacidad (φ) y muchos otros factores normativos.
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ⚠️  SIMULACIÓN EDUCATIVA — APROXIMACIÓN SIMPLIFICADA
+ *
+ * Este módulo implementa mecánica de materiales elemental con fines
+ * pedagógicos. Los resultados NO son válidos para diseño estructural,
+ * peritajes, ni ningún uso profesional. Consulte siempre a un ingeniero
+ * estructural certificado y la norma aplicable (NSR-10, ACI 318, etc.).
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * Modelo simplificado utilizado:
+ *   área efectiva  = ancho × espesor                          (m²)
+ *   esfuerzo       = carga_total / área_efectiva              (kN/m² → MPa)
+ *   capacidad      = resistencia_material según dirección de carga (MPa)
+ *   FS             = capacidad / esfuerzo
+ *   utilización    = esfuerzo / capacidad  =  1 / FS
  */
 
-import type { WallDimensions } from '../domain/wall.types.ts';
-import type { StructuralMaterial } from '../domain/material.types.ts';
-import type { AppliedLoad } from '../domain/load.types.ts';
+import type { WallDimensions }      from '../domain/wall.types.ts';
+import type { StructuralMaterial }  from '../domain/material.types.ts';
+import type { AppliedLoad }         from '../domain/load.types.ts';
 
-// ---------------------------------------------------------------------------
-// Constante de gravedad
-// ---------------------------------------------------------------------------
+// ─── Constantes físicas ────────────────────────────────────────────────────
 
 /** Aceleración gravitacional estándar (m/s²) */
-const G_MS2 = 9.807;
+const G = 9.807;
 
-// ---------------------------------------------------------------------------
-// Función principal
-// ---------------------------------------------------------------------------
+/** FS máximo devuelto cuando el esfuerzo es prácticamente cero (evita ∞) */
+const FS_MAX = 99;
+
+/** Umbral mínimo de esfuerzo en MPa para evitar división por cero */
+const MIN_STRESS_MPA = 1e-6;
+
+// ─── Interfaz de resultado ─────────────────────────────────────────────────
+
+/** Resultado intermedio de calculateSafetyFactor — usado por el orquestador. */
+export interface SafetyFactorResult {
+  /** Factor de seguridad FS = capacidad / esfuerzo. Capéd en FS_MAX. */
+  safetyFactor: number;
+
+  /** Razón de utilización = esfuerzo / capacidad ∈ [0, ∞). >1 → falla. */
+  utilizationRatio: number;
+
+  /** Esfuerzo actuante calculado (MPa) */
+  actuatingStressMPa: number;
+
+  /** Capacidad de resistencia del material según dirección (MPa) */
+  capacityMPa: number;
+
+  /** Carga total considerada (kN), incluyendo peso propio si aplica */
+  totalLoadKN: number;
+
+  /** Peso propio del muro (kN) */
+  selfWeightKN: number;
+}
+
+// ─── Función principal ─────────────────────────────────────────────────────
 
 /**
- * Calcula el factor de seguridad (FS) del muro ante una carga aplicada.
+ * Calcula el factor de seguridad y la razón de utilización del muro.
  *
- * Metodología simplificada educativa:
- *   1. Calcular el área transversal del muro: A = ancho × espesor (m²)
- *   2. Calcular el esfuerzo actuante: σ = P_total / A (MPa)
- *   3. Comparar con la resistencia del material según la dirección de carga.
- *   4. FS = Resistencia / Esfuerzo_actuante
+ * Entradas seguras: si alguna dimensión o carga es ≤ 0, la función devuelve
+ * FS_MAX con utilización 0 (muro sin esfuerzo) en lugar de romper la app.
  *
  * @param dimensions  Dimensiones físicas del muro en metros.
- * @param material    Material con sus propiedades mecánicas.
- * @param load        Carga aplicada en kN con dirección.
- * @returns           Factor de seguridad (adimensional). FS ≥ 1 → seguro.
+ * @param material    Material con propiedades mecánicas.
+ * @param load        Carga aplicada (magnitud en kN + dirección).
+ * @returns           SafetyFactorResult con todos los valores necesarios.
  */
 export function calculateSafetyFactor(
   dimensions: WallDimensions,
-  material: StructuralMaterial,
-  load: AppliedLoad
-): number {
+  material:   StructuralMaterial,
+  load:       AppliedLoad,
+): SafetyFactorResult {
   const { widthM, heightM, thicknessM } = dimensions;
   const props = material.properties;
 
-  // Área transversal horizontal del muro (plano resistente a compresión)
-  const crossSectionAreaM2 = widthM * thicknessM;
+  // ── Guardia: valores inválidos devuelven muro "sin esfuerzo" ──────────────
+  if (widthM <= 0 || heightM <= 0 || thicknessM <= 0 || load.magnitudeKN < 0) {
+    return buildResult(FS_MAX, 0, 0, props.compressiveStrengthMPa, 0, 0);
+  }
 
-  // Área transversal vertical (para cortante en plano)
-  const shearAreaM2 = widthM * heightM;
+  // ── Geometría ─────────────────────────────────────────────────────────────
+  //
+  // Área efectiva transversal (plano horizontal):
+  //   A_eff = ancho × espesor  [m²]
+  //
+  // Esta es el área que resiste la carga en compresión axial.
+  // Para cortante se usa el área vertical (ancho × alto), pero mantenemos
+  // la misma área efectiva para simplificar el modelo educativo.
+  const effectiveAreaM2 = widthM * thicknessM;
 
-  // Peso propio: ρ × V × g → en kN
-  const selfWeightKN =
-    (props.densityKgM3 * widthM * heightM * thicknessM * G_MS2) / 1000;
+  // ── Peso propio ───────────────────────────────────────────────────────────
+  //   W = ρ × V × g / 1000   [kN]
+  const volumeM3    = widthM * heightM * thicknessM;
+  const selfWeightKN = (props.densityKgM3 * volumeM3 * G) / 1000;
 
-  // Carga total considerando peso propio (si aplica)
+  // ── Carga total ───────────────────────────────────────────────────────────
   const totalLoadKN = load.includeSelfWeight
     ? load.magnitudeKN + selfWeightKN
     : load.magnitudeKN;
 
-  // Convertir kN → MN para obtener MPa después de dividir por m²
-  const totalLoadMN = totalLoadKN / 1000;
+  // ── Esfuerzo actuante ─────────────────────────────────────────────────────
+  //   σ [kN/m²] = P [kN] / A [m²]
+  //   σ [MPa]   = σ [kN/m²] / 1000
+  //
+  // ⚠️ Educativo: usamos la misma área efectiva para todas las direcciones
+  // de carga. Un análisis real usaría secciones transversales distintas
+  // según la dirección y el tipo de esfuerzo.
+  const stressKNm2   = totalLoadKN / effectiveAreaM2;
+  const stressMPa    = stressKNm2 / 1000;
 
-  let actuatingStressMPa: number;
-  let resistanceMPa: number;
+  // ── Capacidad del material según dirección ────────────────────────────────
+  const capacityMPa = selectCapacity(props, load.direction);
 
-  switch (load.direction) {
-    case 'AXIAL':
-      // Esfuerzo axial de compresión: σ = P / A
-      actuatingStressMPa = totalLoadMN / crossSectionAreaM2;
-      resistanceMPa = props.compressiveStrengthMPa;
-      break;
-
-    case 'LATERAL':
-      // Esfuerzo de cortante simplificado: τ = V / A_shear
-      actuatingStressMPa = totalLoadMN / shearAreaM2;
-      resistanceMPa = props.shearStrengthMPa;
-      break;
-
-    case 'OUT_OF_PLANE':
-      // Fuerza perpendicular — generalmente governa tensión por flexión
-      // Simplificación: tratar como tensión distribuida
-      actuatingStressMPa = totalLoadMN / crossSectionAreaM2;
-      resistanceMPa = props.tensileStrengthMPa;
-      break;
-
-    case 'COMBINED':
-      // Interacción compresión + cortante (criterio simplificado de Coulomb)
-      // FS_combinado = 1 / (σ/fc + τ/fv) — simplificación didáctica
-      const compressiveStress = totalLoadMN / crossSectionAreaM2;
-      const shearStress = (totalLoadMN * 0.3) / shearAreaM2;
-      const interactionRatio =
-        compressiveStress / props.compressiveStrengthMPa +
-        shearStress / props.shearStrengthMPa;
-      // Retornar FS directamente desde la razón de interacción
-      return clampMin(1 / interactionRatio, 0.01);
-
-    default:
-      actuatingStressMPa = totalLoadMN / crossSectionAreaM2;
-      resistanceMPa = props.compressiveStrengthMPa;
+  // ── Factor de seguridad ───────────────────────────────────────────────────
+  if (stressMPa < MIN_STRESS_MPA) {
+    // Esfuerzo despreciable → muro en reposo sin carga significativa
+    return buildResult(FS_MAX, 0, stressMPa, capacityMPa, totalLoadKN, selfWeightKN);
   }
 
-  // Evitar división por cero
-  if (actuatingStressMPa <= 0) return 99;
+  const fs              = capacityMPa / stressMPa;
+  const utilizationRatio = stressMPa / capacityMPa;
 
-  return clampMin(resistanceMPa / actuatingStressMPa, 0.01);
+  // Cap del FS para evitar valores absurdamente grandes
+  const safeFactor = Math.min(fs, FS_MAX);
+
+  return buildResult(safeFactor, utilizationRatio, stressMPa, capacityMPa, totalLoadKN, selfWeightKN);
 }
 
-/** Asegura que el valor no baje de un mínimo (evita FS negativos). */
-function clampMin(value: number, min: number): number {
-  return value < min ? min : value;
+// ─── Helpers privados ──────────────────────────────────────────────────────
+
+/**
+ * Selecciona la resistencia relevante del material según la dirección de carga.
+ *
+ * ⚠️ Educativo: en la realidad cada modo de falla tiene su propio modelo
+ * de capacidad (por ejemplo, el cortante en mampostería depende de la
+ * adherencia del mortero, no solo de la resistencia del bloque).
+ */
+function selectCapacity(
+  props:     StructuralMaterial['properties'],
+  direction: AppliedLoad['direction'],
+): number {
+  switch (direction) {
+    case 'AXIAL':
+      return props.compressiveStrengthMPa;
+
+    case 'LATERAL':
+      // Fuerza horizontal en el plano: gobierno de cortante
+      return props.shearStrengthMPa;
+
+    case 'OUT_OF_PLANE':
+      // Presión perpendicular al muro: gobierno de tensión (flexión)
+      // Los materiales pétreos son muy vulnerables a este modo
+      return props.tensileStrengthMPa;
+
+    case 'COMBINED':
+      // Combinación simplificada: mínimo de compresión y cortante
+      // ⚠️ Educativo: ignora la interacción biaxial real (diagrama P-M)
+      return Math.min(props.compressiveStrengthMPa, props.shearStrengthMPa);
+
+    default:
+      return props.compressiveStrengthMPa;
+  }
+}
+
+/** Construye el objeto de resultado sin lógica de negocio. */
+function buildResult(
+  safetyFactor:       number,
+  utilizationRatio:   number,
+  actuatingStressMPa: number,
+  capacityMPa:        number,
+  totalLoadKN:        number,
+  selfWeightKN:       number,
+): SafetyFactorResult {
+  return {
+    safetyFactor,
+    utilizationRatio,
+    actuatingStressMPa,
+    capacityMPa,
+    totalLoadKN,
+    selfWeightKN,
+  };
 }

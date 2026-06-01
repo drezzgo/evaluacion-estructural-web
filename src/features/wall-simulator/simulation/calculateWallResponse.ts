@@ -1,83 +1,92 @@
 /**
  * @file calculateWallResponse.ts
- * @description Orquestador principal de la simulación. Combina todos los
- * módulos de cálculo y retorna un WallSimulationResult completo.
+ * @description Orquestador principal del motor de simulación educativa.
  *
- * ⚠️ AVISO EDUCATIVO: Este módulo implementa mecánica de materiales
- * elemental con fines pedagógicos. Los resultados son aproximaciones
- * simplificadas y NO sustituyen un análisis estructural profesional.
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ⚠️  SIMULACIÓN EDUCATIVA — APROXIMACIÓN SIMPLIFICADA
+ *
+ * Este módulo coordina todos los módulos de cálculo y produce un
+ * WallSimulationResult completo. Los resultados son aproximaciones
+ * pedagógicas basadas en mecánica de materiales elemental.
+ *
+ * Flujo de cálculo:
+ *   1. Validar entradas (guardar defaults seguros si son inválidas).
+ *   2. Calcular esfuerzos internos simplificados.
+ *   3. Calcular FS y razón de utilización.
+ *   4. Mapear FS → nivel de daño.
+ *   5. Generar patrón de grietas procedural (reproducible).
+ *   6. Calcular capacidad máxima y métricas auxiliares.
+ *   7. Retornar resultado inmutable (snapshot de la simulación).
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import type { WallDimensions } from '../domain/wall.types.ts';
-import type { StructuralMaterial } from '../domain/material.types.ts';
-import type { AppliedLoad } from '../domain/load.types.ts';
+import type { WallDimensions }       from '../domain/wall.types.ts';
+import type { StructuralMaterial }   from '../domain/material.types.ts';
+import type { AppliedLoad }          from '../domain/load.types.ts';
 import type { WallSimulationResult, WallStresses } from '../domain/simulation.types.ts';
-import { calculateSafetyFactor } from './calculateSafetyFactor.ts';
-import { calculateDamageLevel, getDamageDescription } from './calculateDamageLevel.ts';
-import { generateCrackPattern } from './generateCrackPattern.ts';
+import { calculateSafetyFactor }     from './calculateSafetyFactor.ts';
+import { calculateDamageLevel, getDamageLevelInfo } from './calculateDamageLevel.ts';
+import { generateCrackPattern }      from './generateCrackPattern.ts';
 
-// ---------------------------------------------------------------------------
-// Constante de gravedad
-// ---------------------------------------------------------------------------
-
-const G_MS2 = 9.807;
-
-// ---------------------------------------------------------------------------
-// Función principal
-// ---------------------------------------------------------------------------
+// ─── Función principal ─────────────────────────────────────────────────────
 
 /**
- * Ejecuta la simulación completa del muro y retorna todos los resultados.
+ * Ejecuta la simulación completa del muro y retorna un resultado tipado.
  *
- * Flujo:
- *   1. Calcular área transversal y peso propio.
- *   2. Determinar carga total.
- *   3. Calcular esfuerzos internos (compresión, tensión, cortante, deformación).
- *   4. Calcular factor de seguridad.
- *   5. Mapear FS a nivel de daño.
- *   6. Generar patrón de grietas.
- *   7. Ensamblar y retornar WallSimulationResult.
+ * La función es pura: mismas entradas → mismo resultado.
+ * No tiene efectos secundarios ni depende de estado global.
  *
- * @param dimensions  Dimensiones del muro en metros.
- * @param material    Material seleccionado con propiedades mecánicas.
- * @param load        Carga aplicada (magnitud + dirección).
- * @returns           Resultado completo de la simulación.
+ * @param dimensions  Dimensiones del muro (ancho, alto, espesor en metros).
+ * @param material    Material con propiedades mecánicas del catálogo.
+ * @param load        Carga aplicada (magnitud kN, dirección, peso propio).
+ * @returns           WallSimulationResult completo, listo para UI y 3D.
  */
 export function calculateWallResponse(
   dimensions: WallDimensions,
-  material: StructuralMaterial,
-  load: AppliedLoad
+  material:   StructuralMaterial,
+  load:       AppliedLoad,
 ): WallSimulationResult {
-  const { widthM, heightM, thicknessM } = dimensions;
+  const { widthM, thicknessM } = dimensions;
   const props = material.properties;
 
-  // --- Geometría ---
-  const crossSectionAreaM2 = widthM * thicknessM;     // Área horizontal (m²)
-  const shearAreaM2 = widthM * heightM;               // Área vertical (m²)
-  const volumeM3 = widthM * heightM * thicknessM;     // Volumen (m³)
+  // ── 1. Geometría base ─────────────────────────────────────────────────────
+  const effectiveAreaM2 = Math.max(widthM * thicknessM, 1e-6);
 
-  // --- Peso propio ---
-  const selfWeightKN = (props.densityKgM3 * volumeM3 * G_MS2) / 1000;
+  // ── 2. Factor de seguridad (módulo dedicado) ──────────────────────────────
+  const fsResult = calculateSafetyFactor(dimensions, material, load);
 
-  // --- Carga total ---
-  const totalLoadKN = load.includeSelfWeight
-    ? load.magnitudeKN + selfWeightKN
-    : load.magnitudeKN;
+  const {
+    safetyFactor,
+    utilizationRatio,
+    actuatingStressMPa,
+    totalLoadKN,
+    selfWeightKN,
+  } = fsResult;
 
-  const totalLoadMN = totalLoadKN / 1000;
+  // ── 3. Esfuerzos internos simplificados ───────────────────────────────────
+  //
+  // ⚠️ Educativo: descomponemos el esfuerzo actuante en sus componentes
+  // aproximados. En la realidad se necesitaría análisis de secciones y
+  // diagramas de momento/cortante completos.
+  //
+  // compressiveMPa → esfuerzo axial principal (siempre presente)
+  // tensileMPa     → tensión secundaria por excentricidad o flexión
+  // shearMPa       → cortante estimado (relevante en carga LATERAL/COMBINED)
+  // strainUnitless → deformación unitaria ε = σ/E
 
-  // --- Esfuerzos calculados (simplificados) ---
-  const compressiveMPa = totalLoadMN / crossSectionAreaM2;
+  const compressiveMPa = actuatingStressMPa;
+
   const tensileMPa =
     load.direction === 'OUT_OF_PLANE'
-      ? compressiveMPa * 0.8
-      : compressiveMPa * 0.1; // tensión secundaria siempre presente
+      ? actuatingStressMPa * 0.85  // Flexión fuera del plano → tensión dominante
+      : actuatingStressMPa * 0.10; // Tensión secundaria siempre presente
+
   const shearMPa =
     load.direction === 'LATERAL' || load.direction === 'COMBINED'
-      ? totalLoadMN / shearAreaM2
-      : compressiveMPa * 0.1;
+      ? actuatingStressMPa * 0.60  // Cortante relevante en carga horizontal
+      : actuatingStressMPa * 0.08;
 
-  // Deformación unitaria: ε = σ / E (convertir MPa y GPa a unidades consistentes)
+  // ε = σ/E — E en GPa, σ en MPa → factor ×1000 para unidades consistentes
   const strainUnitless = compressiveMPa / (props.elasticModulusGPa * 1000);
 
   const stresses: WallStresses = {
@@ -87,33 +96,35 @@ export function calculateWallResponse(
     strainUnitless,
   };
 
-  // --- Factor de seguridad ---
-  const safetyFactor = calculateSafetyFactor(dimensions, material, load);
-
-  // --- Nivel de daño ---
+  // ── 4. Nivel de daño ──────────────────────────────────────────────────────
   const damageLevel = calculateDamageLevel(safetyFactor);
 
-  // --- Patrón de grietas ---
-  const crackPattern = generateCrackPattern(
-    damageLevel,
-    load.direction,
-    safetyFactor
-  );
+  // ── 5. Patrón de grietas ──────────────────────────────────────────────────
+  const crackPattern = generateCrackPattern(damageLevel, load.direction, safetyFactor);
 
-  // --- Capacidad máxima del muro ---
-  const maxCapacityKN = props.compressiveStrengthMPa * crossSectionAreaM2 * 1000;
+  // ── 6. Métricas auxiliares ────────────────────────────────────────────────
+  //
+  // Capacidad máxima teórica: P_max = f_c × A [kN]
+  // Muestra cuánta carga total podría soportar el muro antes de fallar en compresión.
+  const maxCapacityKN = props.compressiveStrengthMPa * effectiveAreaM2 * 1000;
 
+  // ── 7. Mensaje de estado (para UI) ────────────────────────────────────────
+  const { label, description } = getDamageLevelInfo(damageLevel);
+  const statusMessage = `${label}: ${description}`;
+
+  // ── Retorno del resultado completo (inmutable via readonly implicito) ──────
   return {
     dimensions,
     material,
     load,
     stresses,
     safetyFactor,
+    utilizationRatio,
     damageLevel,
     crackPattern,
     maxCapacityKN,
     selfWeightKN,
     totalLoadKN,
-    statusMessage: getDamageDescription(damageLevel),
+    statusMessage,
   };
 }

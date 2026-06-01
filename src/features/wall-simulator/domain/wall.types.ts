@@ -31,21 +31,25 @@ export interface WallDimensions {
 // ---------------------------------------------------------------------------
 
 /**
- * Nivel de daño estructural del muro.
- * Se asigna en función de la razón esfuerzo/resistencia.
+ * Nivel de daño estructural del muro — modelo educativo simplificado.
+ * Asignado en función del factor de seguridad (FS = capacidad / esfuerzo).
  *
- * - NONE:     Sin daño visible. Esfuerzo < 30% de la resistencia.
- * - MINOR:    Microgrietas hairline. 30–55% de la resistencia.
- * - MODERATE: Grietas visibles. 55–80% de la resistencia.
- * - SEVERE:   Grietas profundas, pérdida de integridad. 80–95%.
- * - CRITICAL: Colapso inminente. > 95% de la resistencia.
+ * | Nivel    | Factor de seguridad | Descripción visual                          |
+ * |----------|---------------------|---------------------------------------------|
+ * | none     | FS > 2.0            | Sin daño. Muro íntegro.                     |
+ * | low      | 1.5 < FS ≤ 2.0      | Microgrietas hairline (< 0.1 mm).           |
+ * | moderate | 1.0 < FS ≤ 1.5      | Grietas visibles (0.1–1 mm).                |
+ * | severe   | 0.7 < FS ≤ 1.0      | Grietas profundas, pérdida de rigidez.      |
+ * | failure  | FS ≤ 0.7            | Colapso estructural. Muro ha fallado.       |
+ *
+ * ⚠️ Aproximación educativa — no usar para diseño estructural real.
  */
 export type DamageLevel =
-  | 'NONE'
-  | 'MINOR'
-  | 'MODERATE'
-  | 'SEVERE'
-  | 'CRITICAL';
+  | 'none'
+  | 'low'
+  | 'moderate'
+  | 'severe'
+  | 'failure';
 
 // ---------------------------------------------------------------------------
 // Grietas

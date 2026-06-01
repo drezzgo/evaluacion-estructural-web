@@ -74,16 +74,31 @@ export interface WallSimulationResult {
   stresses: WallStresses;
 
   /**
-   * Factor de seguridad (FS) global simplificado.
-   * FS = Resistencia / Esfuerzo_actuante.
+   * Factor de seguridad (FS) = capacidad_material / esfuerzo_actuante.
    *
-   * Interpretación educativa:
-   *  - FS > 3.0 → Muro seguro (zona verde)
-   *  - FS 2.0–3.0 → Aceptable con revisión
-   *  - FS 1.0–2.0 → Crítico, posible daño
-   *  - FS < 1.0 → Falla estructural
+   * Umbrales educativos del motor:
+   *  - FS > 2.0  → none    (sin daño)
+   *  - 1.5–2.0  → low     (microgrietas)
+   *  - 1.0–1.5  → moderate (grietas visibles)
+   *  - 0.7–1.0  → severe   (grietas profundas)
+   *  - < 0.7    → failure  (colapso)
+   *
+   * Capéd en 99 cuando el esfuerzo es prácticamente cero.
    */
   safetyFactor: number;
+
+  /**
+   * Razón de utilización = esfuerzo_actuante / capacidad_material.
+   * Inverso del factor de seguridad, expresado en rango [0, 1+].
+   *
+   * - < 0.5  → uso bajo (zona verde en UI)
+   * - 0.5–0.67 → uso moderado
+   * - 0.67–1.0 → zona crítica
+   * - > 1.0  → material superado (falla)
+   *
+   * 💡 Clave para mapear color/intensidad en la visualización 3D del muro.
+   */
+  utilizationRatio: number;
 
   /** Nivel de daño asignado basado en el factor de seguridad */
   damageLevel: DamageLevel;

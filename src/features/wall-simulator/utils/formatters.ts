@@ -75,22 +75,22 @@ export function formatPercent(value: number): string {
 // Nivel de daño
 // ---------------------------------------------------------------------------
 
-/** Mapas de etiqueta legible por nivel de daño */
+/** Mapa de etiquetas legibles en español por nivel de daño. */
 const DAMAGE_LABELS: Record<DamageLevel, string> = {
-  NONE: 'Sin daño',
-  MINOR: 'Daño menor',
-  MODERATE: 'Daño moderado',
-  SEVERE: 'Daño severo',
-  CRITICAL: 'Estado crítico',
+  none:     'Sin daño',
+  low:      'Daño leve',
+  moderate: 'Daño moderado',
+  severe:   'Daño severo',
+  failure:  'Falla estructural',
 };
 
-/** Colores Tailwind semánticos por nivel de daño (para la UI) */
+/** Clases de color Tailwind semánticas por nivel de daño (modo oscuro del simulador). */
 const DAMAGE_COLORS: Record<DamageLevel, string> = {
-  NONE: 'text-green-400',
-  MINOR: 'text-yellow-400',
-  MODERATE: 'text-orange-400',
-  SEVERE: 'text-red-500',
-  CRITICAL: 'text-red-700',
+  none:     'text-green-400',
+  low:      'text-yellow-400',
+  moderate: 'text-orange-400',
+  severe:   'text-red-500',
+  failure:  'text-red-700',
 };
 
 /**
