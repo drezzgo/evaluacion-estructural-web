@@ -1,7 +1,6 @@
 /**
  * MaterialSelector.tsx
- * Selector de material estructural con visualización de propiedades clave.
- * Conectado al store de Zustand.
+ * Selector de material estructural en tema claro.
  */
 
 import { useWallSimulatorStore, selectMaterialId } from '../../state/wallSimulator.store.ts';
@@ -18,37 +17,37 @@ export function MaterialSelector() {
   const current = MATERIALS.find((m) => m.id === materialId)!;
 
   return (
-    <SidebarSection title="Material" icon="🧱">
+    <SidebarSection title="Material Estructural" icon="🧱">
       {/* Grid de tarjetas de material */}
-      <div className="grid grid-cols-2 gap-1.5">
+      <div className="grid grid-cols-2 gap-2">
         {MATERIALS.map((mat) => {
           const isSelected = mat.id === materialId;
           return (
             <button
               key={mat.id}
               onClick={() => setMaterial(mat.id as MaterialType)}
-              className={`flex flex-col items-start gap-1 p-2.5 rounded-lg border text-left
-                transition-all duration-150 cursor-pointer
+              className={`flex flex-col items-start gap-1.5 p-3 rounded-xl border text-left
+                transition-all duration-200 cursor-pointer
                 ${isSelected
-                  ? 'border-[#126DA6] bg-[#126DA6]/15 shadow-[0_0_0_1px_rgba(18,109,166,0.4)]'
-                  : 'border-white/10 bg-white/3 hover:border-white/20 hover:bg-white/5'
+                  ? 'border-ea-blue bg-white shadow-[0_0_0_1px_rgba(18,109,166,1),0_4px_12px_rgba(18,109,166,0.1)]'
+                  : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                 }`}
             >
               {/* Chip de color del material */}
               <div
-                className="w-5 h-5 rounded-sm"
+                className="w-5 h-5 rounded shadow-sm border border-black/5"
                 style={{ backgroundColor: mat.colorHex }}
               />
               <span
-                className="text-xs font-semibold leading-tight"
+                className="text-sm font-semibold leading-tight mt-1"
                 style={{
-                  color:      isSelected ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                  color:      isSelected ? '#126DA6' : '#242424',
                   fontFamily: "'Cal Sans', Inter, sans-serif",
                 }}
               >
                 {mat.displayName}
               </span>
-              <span className="text-[9px] font-mono text-white/30 tabular-nums">
+              <span className="text-[10px] font-mono font-medium text-gray-500 tabular-nums">
                 f'c {mat.properties.compressiveStrengthMPa} MPa
               </span>
             </button>
@@ -58,12 +57,12 @@ export function MaterialSelector() {
 
       {/* Propiedades del material seleccionado */}
       {current && (
-        <div className="mt-1 p-2.5 rounded-md bg-white/5 border border-white/8 space-y-1.5">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold"
+        <div className="mt-4 p-4 rounded-xl bg-white border border-gray-100 shadow-sm space-y-2">
+          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold"
             style={{ fontFamily: "Inter, sans-serif" }}>
-            Propiedades ({current.displayName})
+            Ficha Técnica ({current.displayName})
           </p>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[11px] font-mono">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-[12px] font-mono">
             {[
               ['Compresión', `${current.properties.compressiveStrengthMPa} MPa`],
               ['Tensión', `${current.properties.tensileStrengthMPa} MPa`],
@@ -72,13 +71,13 @@ export function MaterialSelector() {
               ['Densidad', `${current.properties.densityKgM3} kg/m³`],
             ].map(([k, v]) => (
               <div key={k} className="contents">
-                <span className="text-white/35">{k}</span>
-                <span className="text-[#3ab7bf] text-right">{v}</span>
+                <span className="text-gray-500 font-medium">{k}</span>
+                <span className="text-brand-midnight text-right font-bold">{v}</span>
               </div>
             ))}
           </div>
-          <p className="text-[9px] text-white/20 pt-0.5 leading-relaxed">
-            {current.description.slice(0, 80)}…
+          <p className="text-[11px] text-gray-500 pt-2 border-t border-gray-100 mt-2 leading-relaxed">
+            {current.description}
           </p>
         </div>
       )}

@@ -1,6 +1,6 @@
 /**
  * SidebarPanel.tsx
- * Contenedor del panel lateral izquierdo con secciones colapsables.
+ * Contenedor del panel lateral izquierdo adaptado a tema claro.
  */
 
 import type { ReactNode } from 'react';
@@ -15,27 +15,25 @@ interface SectionProps {
   children: ReactNode;
 }
 
-/** Sección individual dentro del sidebar con separador. */
 export function SidebarSection({ title, icon, children }: SectionProps) {
   return (
-    <div className="border-b border-white/8">
-      <div className="flex items-center gap-2 px-4 py-3">
-        <span className="text-base">{icon}</span>
+    <div className="border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-2 px-5 py-4 bg-white/50">
+        <span className="text-lg">{icon}</span>
         <span
-          className="text-xs font-semibold tracking-widest uppercase text-white/40"
+          className="text-[11px] font-bold tracking-widest uppercase text-brand-midnight"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           {title}
         </span>
       </div>
-      <div className="px-4 pb-4 space-y-3">
+      <div className="px-5 pb-5 space-y-4">
         {children}
       </div>
     </div>
   );
 }
 
-/** Contenedor raíz del sidebar. */
 export function SidebarPanel({ children }: SidebarPanelProps) {
   return (
     <div className="flex flex-col h-full">
@@ -44,7 +42,7 @@ export function SidebarPanel({ children }: SidebarPanelProps) {
   );
 }
 
-// ─── Primitivos de UI reutilizables en el sidebar ─────────────────────────
+// ─── Primitivos de UI ───────────────────────────────────────────────────────
 
 interface LabeledSliderProps {
   label:    string;
@@ -56,16 +54,15 @@ interface LabeledSliderProps {
   onChange: (value: number) => void;
 }
 
-/** Slider con etiqueta y valor numérico inline. */
 export function LabeledSlider({ label, value, min, max, step, unit, onChange }: LabeledSliderProps) {
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <div className="flex justify-between items-baseline">
-        <label className="text-xs text-white/60" style={{ fontFamily: "Inter, sans-serif" }}>
+        <label className="text-[13px] font-medium text-gray-700" style={{ fontFamily: "Inter, sans-serif" }}>
           {label}
         </label>
-        <span className="text-xs font-mono text-[#3ab7bf] tabular-nums">
-          {value.toFixed(2)}<span className="text-white/30 ml-0.5">{unit}</span>
+        <span className="text-[13px] font-mono font-semibold text-ea-blue tabular-nums bg-ea-blue/5 px-2 py-0.5 rounded">
+          {value.toFixed(2)}<span className="text-gray-400 font-normal ml-0.5">{unit}</span>
         </span>
       </div>
       <input
@@ -76,18 +73,19 @@ export function LabeledSlider({ label, value, min, max, step, unit, onChange }: 
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="w-full h-1.5 appearance-none rounded-full cursor-pointer
-                   bg-white/10
+                   bg-gray-200
                    [&::-webkit-slider-thumb]:appearance-none
-                   [&::-webkit-slider-thumb]:w-3.5
-                   [&::-webkit-slider-thumb]:h-3.5
+                   [&::-webkit-slider-thumb]:w-4
+                   [&::-webkit-slider-thumb]:h-4
                    [&::-webkit-slider-thumb]:rounded-full
-                   [&::-webkit-slider-thumb]:bg-[#126DA6]
-                   [&::-webkit-slider-thumb]:border-2
-                   [&::-webkit-slider-thumb]:border-white/20
-                   [&::-webkit-slider-thumb]:shadow-lg
-                   [&::-webkit-slider-thumb]:cursor-pointer"
+                   [&::-webkit-slider-thumb]:bg-white
+                   [&::-webkit-slider-thumb]:border-[3px]
+                   [&::-webkit-slider-thumb]:border-ea-blue
+                   [&::-webkit-slider-thumb]:shadow-md
+                   [&::-webkit-slider-thumb]:cursor-pointer
+                   focus:outline-none focus:ring-2 focus:ring-ea-blue/20"
       />
-      <div className="flex justify-between text-[10px] text-white/20 font-mono">
+      <div className="flex justify-between text-[11px] text-gray-400 font-mono">
         <span>{min}{unit}</span>
         <span>{max}{unit}</span>
       </div>

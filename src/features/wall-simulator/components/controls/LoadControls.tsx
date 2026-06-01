@@ -1,20 +1,17 @@
 /**
  * LoadControls.tsx
- * Controles de carga aplicada: magnitud, dirección y peso propio.
- * Conectado al store de Zustand.
+ * Controles de carga aplicada en tema claro.
  */
 
 import { useWallSimulatorStore, selectLoad } from '../../state/wallSimulator.store.ts';
 import { SidebarSection, LabeledSlider }     from '../layout/SidebarPanel.tsx';
 import type { LoadDirection }                from '../../domain/load.types.ts';
 
-// ─── Opciones de dirección ─────────────────────────────────────────────────
-
 const DIRECTIONS: { id: LoadDirection; label: string; icon: string; desc: string }[] = [
-  { id: 'AXIAL',        label: 'Axial',         icon: '⬇', desc: 'Compresión vertical' },
-  { id: 'LATERAL',      label: 'Lateral',        icon: '➡', desc: 'Cortante sísmico' },
-  { id: 'OUT_OF_PLANE', label: 'Fuera del plano',icon: '↗', desc: 'Presión de viento' },
-  { id: 'COMBINED',     label: 'Combinada',      icon: '✕', desc: 'Axial + lateral' },
+  { id: 'AXIAL',        label: 'Axial',         icon: '⬇', desc: 'Vertical' },
+  { id: 'LATERAL',      label: 'Lateral',        icon: '➡', desc: 'Sísmico' },
+  { id: 'OUT_OF_PLANE', label: 'Fuera plano',    icon: '↗', desc: 'Viento' },
+  { id: 'COMBINED',     label: 'Combinada',      icon: '✕', desc: 'Ax+Lat' },
 ];
 
 export function LoadControls() {
@@ -24,9 +21,8 @@ export function LoadControls() {
   const resetSimulation = useWallSimulatorStore((s) => s.resetSimulation);
 
   return (
-    <SidebarSection title="Carga Aplicada" icon="⚡">
+    <SidebarSection title="Estado de Cargas" icon="⚡">
 
-      {/* Magnitud */}
       <LabeledSlider
         label="Magnitud"
         value={load.magnitudeKN}
@@ -37,12 +33,11 @@ export function LoadControls() {
         onChange={(v) => setLoad({ magnitudeKN: v })}
       />
 
-      {/* Dirección de la carga */}
-      <div className="space-y-1.5">
-        <p className="text-xs text-white/40" style={{ fontFamily: "Inter, sans-serif" }}>
-          Dirección
+      <div className="space-y-2 pt-2">
+        <p className="text-[13px] font-medium text-gray-700" style={{ fontFamily: "Inter, sans-serif" }}>
+          Dirección de la Carga
         </p>
-        <div className="grid grid-cols-2 gap-1">
+        <div className="grid grid-cols-2 gap-2">
           {DIRECTIONS.map((dir) => {
             const isActive = load.direction === dir.id;
             return (
@@ -50,50 +45,50 @@ export function LoadControls() {
                 key={dir.id}
                 onClick={() => setLoadDir(dir.id)}
                 title={dir.desc}
-                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-md text-left
-                  transition-all duration-150 cursor-pointer text-xs border
+                className={`flex flex-col items-start gap-1 p-2.5 rounded-xl text-left
+                  transition-all duration-200 cursor-pointer border
                   ${isActive
-                    ? 'bg-[#126DA6]/20 border-[#126DA6]/50 text-white'
-                    : 'bg-white/3 border-white/10 text-white/50 hover:border-white/20 hover:text-white/70'
+                    ? 'bg-ea-blue/5 border-ea-blue text-brand-midnight shadow-[0_0_0_1px_rgba(18,109,166,1)]'
+                    : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:shadow-sm hover:text-brand-charcoal'
                   }`}
               >
-                <span className="text-sm leading-none">{dir.icon}</span>
-                <span style={{ fontFamily: "Inter, sans-serif" }} className="font-medium leading-tight">
-                  {dir.label}
-                </span>
+                <div className="flex items-center gap-2 w-full">
+                  <span className="text-base leading-none text-brand-charcoal">{dir.icon}</span>
+                  <span style={{ fontFamily: "Inter, sans-serif" }} className="font-semibold text-sm leading-tight">
+                    {dir.label}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-gray-400 mt-1">{dir.desc}</span>
               </button>
             );
           })}
         </div>
-        <p className="text-[10px] text-white/25 font-mono">
-          {DIRECTIONS.find(d => d.id === load.direction)?.desc}
-        </p>
       </div>
 
-      {/* Punto de aplicación horizontal */}
-      <LabeledSlider
-        label="Posición horizontal"
-        value={load.positionXNorm}
-        min={0}
-        max={1}
-        step={0.05}
-        unit=""
-        onChange={(v) => setLoad({ positionXNorm: v })}
-      />
+      <div className="pt-2">
+        <LabeledSlider
+          label="Excentricidad (Posición X)"
+          value={load.positionXNorm}
+          min={0}
+          max={1}
+          step={0.05}
+          unit=""
+          onChange={(v) => setLoad({ positionXNorm: v })}
+        />
+      </div>
 
-      {/* Toggle peso propio */}
-      <div className="flex items-center justify-between py-1">
-        <span className="text-xs text-white/60" style={{ fontFamily: "Inter, sans-serif" }}>
-          Incluir peso propio
+      <div className="flex items-center justify-between py-3 border-y border-gray-100 my-2">
+        <span className="text-[13px] font-medium text-gray-700" style={{ fontFamily: "Inter, sans-serif" }}>
+          Incluir peso propio (Dead Load)
         </span>
         <button
           role="switch"
           aria-checked={load.includeSelfWeight}
           onClick={() => setLoad({ includeSelfWeight: !load.includeSelfWeight })}
-          className={`relative w-9 h-5 rounded-full transition-colors duration-200 cursor-pointer border
+          className={`relative w-10 h-6 rounded-full transition-colors duration-200 cursor-pointer border-2
             ${load.includeSelfWeight
-              ? 'bg-[#126DA6] border-[#126DA6]'
-              : 'bg-white/10 border-white/20'
+              ? 'bg-ea-blue border-ea-blue'
+              : 'bg-gray-200 border-gray-200'
             }`}
         >
           <span
@@ -104,15 +99,14 @@ export function LoadControls() {
         </button>
       </div>
 
-      {/* Botón de reset */}
       <button
         onClick={resetSimulation}
-        className="w-full mt-1 py-2 text-xs font-semibold text-white/40
-          border border-white/10 rounded-lg hover:border-white/20 hover:text-white/60
-          transition-all duration-150 cursor-pointer"
+        className="w-full mt-4 py-2.5 text-sm font-semibold text-gray-600 bg-white
+          border border-gray-200 rounded-full hover:border-gray-300 hover:text-brand-charcoal hover:bg-gray-50
+          transition-all duration-200 cursor-pointer shadow-sm active:scale-95"
         style={{ fontFamily: "Inter, sans-serif" }}
       >
-        ↺ Restablecer simulación
+        ↺ Restablecer valores
       </button>
     </SidebarSection>
   );

@@ -1,7 +1,6 @@
 /**
  * WallDimensionsForm.tsx
- * Controles de dimensiones del muro: ancho, alto y espesor.
- * Conectado al store de Zustand — cada cambio recalcula la simulación.
+ * Controles de dimensiones del muro en tema claro corporativo.
  */
 
 import { useWallSimulatorStore, selectDimensions } from '../../state/wallSimulator.store.ts';
@@ -12,7 +11,7 @@ export function WallDimensionsForm() {
   const setDimensions = useWallSimulatorStore((s) => s.setDimensions);
 
   return (
-    <SidebarSection title="Dimensiones del Muro" icon="📐">
+    <SidebarSection title="Geometría del Muro" icon="📐">
       <LabeledSlider
         label="Ancho"
         value={dimensions.widthM}
@@ -42,18 +41,18 @@ export function WallDimensionsForm() {
       />
 
       {/* Resumen de geometría */}
-      <div className="mt-1 p-2.5 rounded-md bg-white/5 border border-white/8">
-        <p className="text-[10px] text-white/40 uppercase tracking-widest mb-1.5 font-semibold"
+      <div className="mt-4 p-3 rounded-xl bg-white border border-gray-100 shadow-sm">
+        <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-2 font-bold"
           style={{ fontFamily: "Inter, sans-serif" }}>
-          Geometría
+          Datos Geométricos
         </p>
-        <div className="grid grid-cols-2 gap-1 text-[11px] font-mono">
-          <span className="text-white/40">Área efectiva</span>
-          <span className="text-[#3ab7bf] text-right">
+        <div className="grid grid-cols-2 gap-2 text-[12px] font-mono">
+          <span className="text-gray-500 font-medium">Área efectiva</span>
+          <span className="text-brand-midnight text-right font-bold">
             {(dimensions.widthM * dimensions.thicknessM).toFixed(3)} m²
           </span>
-          <span className="text-white/40">Volumen</span>
-          <span className="text-[#3ab7bf] text-right">
+          <span className="text-gray-500 font-medium">Volumen</span>
+          <span className="text-brand-midnight text-right font-bold">
             {(dimensions.widthM * dimensions.heightM * dimensions.thicknessM).toFixed(3)} m³
           </span>
         </div>
