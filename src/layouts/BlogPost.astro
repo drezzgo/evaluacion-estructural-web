@@ -25,7 +25,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	</head>
 
-	<body class="antialiased bg-white text-[#242424] leading-relaxed">
+	<body class="antialiased bg-white text-brand-charcoal leading-relaxed">
 		<Header />
 		
 		<main class="w-full max-w-4xl mx-auto px-6 py-12 md:py-20">
@@ -66,7 +66,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 								)
 							}
 						</div>
-						<h1 class="text-3xl md:text-5xl font-bold text-[#111111] leading-tight mb-8 font-display tracking-tight">
+						<h1 class="text-3xl md:text-5xl font-bold text-brand-midnight leading-tight mb-8 font-display tracking-tight">
 							{title}
 						</h1>
 						<hr class="w-20 h-1 mx-auto bg-ea-blue border-0 rounded-full" />
@@ -75,8 +75,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 					{/* Contenido dinámico del post */}
 					<div class="max-w-none 
 						[&>p]:mb-6 [&>p]:text-base [&>p]:md:text-[17px] [&>p]:text-gray-600 [&>p]:font-light [&>p]:leading-relaxed
-						[&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mt-12 [&>h2]:mb-4 [&>h2]:text-[#111111] [&>h2]:font-display [&>h2]:tracking-tight
-						[&>h3]:text-xl [&>h3]:font-bold [&>h3]:mt-8 [&>h3]:mb-3 [&>h3]:text-[#111111] [&>h3]:font-display [&>h3]:tracking-tight
+						[&>h2]:text-2xl [&>h2]:font-bold [&>h2]:mt-12 [&>h2]:mb-4 [&>h2]:text-brand-midnight [&>h2]:font-display [&>h2]:tracking-tight
+						[&>h3]:text-xl [&>h3]:font-bold [&>h3]:mt-8 [&>h3]:mb-3 [&>h3]:text-brand-midnight [&>h3]:font-display [&>h3]:tracking-tight
 						[&>ul]:list-none [&>ul]:pl-0 [&>ul]:mb-6 [&>ul]:text-gray-600 [&>ul]:font-light [&>ul]:space-y-3
 						[&>ul>li]:relative [&>ul>li]:pl-6 [&>ul>li]:text-sm [&>ul>li]:md:text-[15px]
 						[&>ul>li::before]:content-[''] [&>ul>li::before]:absolute [&>ul>li::before]:left-0 [&>ul>li::before]:top-[8px] [&>ul>li::before]:w-1.5 [&>ul>li::before]:h-1.5 [&>ul>li::before]:rounded-full [&>ul>li::before]:bg-ea-blue
@@ -92,7 +92,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 					
 					<!-- Back to previous navigation -->
 					<div class="mt-16 pt-8 border-t border-gray-100 flex justify-between">
-						<button onclick="window.history.back()" class="inline-flex items-center gap-2 text-xs font-bold text-[#111111] hover:text-ea-blue transition-colors uppercase tracking-wider cursor-pointer">
+						<button onclick="window.history.back()" class="inline-flex items-center gap-2 text-xs font-bold text-brand-midnight hover:text-ea-blue transition-colors uppercase tracking-wider cursor-pointer">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
 							Volver
 						</button>

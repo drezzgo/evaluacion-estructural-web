@@ -42,7 +42,7 @@ const icons = {
 			.scroll-reveal, .service-card, .animated-list-item, .pillar-card, .timeline-item { opacity: 0; }
 		</style>
 	</head>
-	<body class="antialiased bg-white text-[#242424]">
+	<body class="antialiased bg-white text-brand-charcoal">
 		<Header />
 		
 		<main id="home-main" class="w-full">
@@ -56,9 +56,9 @@ const icons = {
 				<div class="absolute inset-0 blueprint-grid opacity-20 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_100%)]"></div>
 
 				<!-- Gradient vignette bottom fade -->
-				<div class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+				<div class="absolute bottom-0 inset-x-0 h-32 bg-linear-to-t from-white to-transparent pointer-events-none"></div>
 				
-				<div class="relative z-10 max-w-[1200px] mx-auto flex flex-col items-center">
+				<div class="relative z-10 max-w-300 mx-auto flex flex-col items-center">
 					<!-- Giant Isotype with halo glow ring -->
 					<div class="relative mb-8 animate-fade-in-up">
 						<div class="absolute inset-0 rounded-full bg-ea-blue/10 blur-2xl scale-150 animate-pulse"></div>
@@ -71,7 +71,7 @@ const icons = {
 						Consultoría y Patología Estructural en Bogotá
 					</div>
 					
-					<h1 class="text-4xl md:text-[68px] font-bold leading-[1.05] text-[#111111] max-w-4xl tracking-tighter font-display animate-fade-in-up delay-100">
+					<h1 class="text-4xl md:text-[68px] font-bold leading-[1.05] text-brand-midnight max-w-4xl tracking-tighter font-display animate-fade-in-up delay-100">
 						Ingeniería y Diagnóstico<br class="hidden md:block"/> Estructural de <span class="bg-gradient-to-r from-ea-blue to-ea-light-blue bg-clip-text text-transparent">Precisión</span>
 					</h1>
 					
@@ -92,7 +92,7 @@ const icons = {
 
 			<!-- ═══ METRICS SECTION ═══ -->
 			<section class="border-y border-gray-100 bg-[#fbfdfd] py-12 px-6 scroll-reveal">
-				<div class="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+				<div class="max-w-300 mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
 					<div>
 						<div class="metric-number text-3xl md:text-4xl font-bold text-ea-blue font-display" data-target="150" data-prefix="+" data-suffix="">+150</div>
 						<div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mt-1">Estructuras Evaluadas</div>
@@ -113,10 +113,10 @@ const icons = {
 			</section>
 
 			<!-- ═══ SERVICES SECTION ═══ -->
-			<section class="py-24 px-6 max-w-[1200px] mx-auto">
+			<section class="py-24 px-6 max-w-300 mx-auto">
 				<div class="mb-16 text-center md:text-left md:flex justify-between items-end scroll-reveal">
 					<div>
-						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">
+						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-brand-midnight tracking-tight">
 							Servicios Especializados
 						</h2>
 						<p class="mt-3 text-gray-500 font-light max-w-2xl text-[17px]">
@@ -135,7 +135,7 @@ const icons = {
 						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
 							<Fragment set:html={icons["shield-check"]} />
 						</div>
-						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Vulnerabilidad Sísmica</h3>
+						<h3 class="text-2xl font-bold text-brand-midnight mb-3 tracking-tight">Vulnerabilidad Sísmica</h3>
 						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
 							Evaluación del desempeño estructural de edificaciones existentes. Desarrollo de modelos matemáticos analíticos en software especializado y levantamientos geométricos de alta precisión.
 						</p>
@@ -149,7 +149,7 @@ const icons = {
 						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
 							<Fragment set:html={icons["microscope"]} />
 						</div>
-						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Patología Estructural</h3>
+						<h3 class="text-2xl font-bold text-brand-midnight mb-3 tracking-tight">Patología Estructural</h3>
 						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
 							Diagnóstico integral de fallas mecánicas, grietas y deterioro de materiales mediante ensayos no destructivos (esclerometría, ultrasonido) y destructivos (extracción de núcleos).
 						</p>
@@ -163,7 +163,7 @@ const icons = {
 						<div class="w-12 h-12 rounded-xl bg-ea-blue/5 text-ea-blue flex items-center justify-center mb-6">
 							<Fragment set:html={icons["wrench"]} />
 						</div>
-						<h3 class="text-2xl font-bold text-[#111111] mb-3 tracking-tight">Reforzamiento Estructural</h3>
+						<h3 class="text-2xl font-bold text-brand-midnight mb-3 tracking-tight">Reforzamiento Estructural</h3>
 						<p class="text-gray-500 font-light leading-relaxed grow text-sm">
 							Diseño técnico y memorias de cálculo detalladas para la rehabilitación, reforzamiento e incremento de rigidez de edificaciones que no cumplen con la normatividad actual.
 						</p>
@@ -177,7 +177,7 @@ const icons = {
 			
 			<!-- ═══ METHODOLOGY & FEM DIAGRAM ═══ -->
 			<section class="py-24 px-6 bg-[#fbfdfd] border-y border-gray-100">
-				<div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-16 items-center">
+				<div class="max-w-300 mx-auto flex flex-col lg:flex-row gap-16 items-center">
 					
 					<!-- Animated SVG FEM diagram with Anime.js path drawing -->
 					<div class="w-full lg:w-1/2 aspect-[4/3] cal-shadow bg-white rounded-2xl p-6 flex items-center justify-center relative overflow-hidden border border-gray-100 scroll-reveal">
@@ -262,13 +262,13 @@ const icons = {
 					
 					<!-- Methodology content -->
 					<div class="w-full lg:w-1/2 space-y-8 scroll-reveal">
-						<h2 class="text-3xl md:text-[40px] font-bold leading-tight text-[#111111] tracking-tight">
+						<h2 class="text-3xl md:text-[40px] font-bold leading-tight text-brand-midnight tracking-tight">
 							Rigurosidad Normativa y Técnica
 						</h2>
 						<p class="text-gray-500 font-light leading-relaxed text-sm md:text-base">
 							Basamos nuestras conclusiones en datos objetivos recopilados mediante equipos de última generación y software de cálculo estructural avanzado. Aseguramos diagnósticos precisos que brindan respaldo técnico y legal.
 						</p>
-						<ul class="space-y-4 text-[#111111] font-medium text-sm list-none p-0">
+						<ul class="space-y-4 text-brand-midnight font-medium text-sm list-none p-0">
 							{[
 								'Exploración física y levantamiento patológico minucioso.',
 								'Ensayos de materiales destructivos y no destructivos.',
@@ -289,10 +289,10 @@ const icons = {
 
 			<!-- ═══ PROYECTOS RECIENTES ═══ -->
 			{latestProyectos.length > 0 && (
-				<section class="py-24 px-6 max-w-[1200px] mx-auto">
+				<section class="py-24 px-6 max-w-300 mx-auto">
 					<div class="mb-16 text-center md:text-left md:flex justify-between items-end scroll-reveal">
 						<div>
-							<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">
+							<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-brand-midnight tracking-tight">
 								Proyectos Recientes
 							</h2>
 							<p class="mt-3 text-gray-500 font-light max-w-2xl text-[17px]">
@@ -315,7 +315,7 @@ const icons = {
 										<div class="w-full h-full blueprint-grid opacity-30 flex items-center justify-center text-gray-300 text-sm">[Proyecto]</div>
 									)}
 								</div>
-								<h4 class="font-bold text-[#111111] text-lg leading-tight group-hover:text-ea-blue transition-colors mb-2">{proyecto.data.title}</h4>
+								<h4 class="font-bold text-brand-midnight text-lg leading-tight group-hover:text-ea-blue transition-colors mb-2">{proyecto.data.title}</h4>
 								<p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">{proyecto.data.description}</p>
 							</a>
 						))}
@@ -325,9 +325,9 @@ const icons = {
 
 			<!-- ═══ BLOG ARTICLES ═══ -->
 			{latestBlog.length > 0 && (
-				<section class="py-24 px-6 border-t border-gray-100 max-w-[1200px] mx-auto">
+				<section class="py-24 px-6 border-t border-gray-100 max-w-300 mx-auto">
 					<div class="mb-16 text-center scroll-reveal">
-						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-[#111111] tracking-tight">Artículos Técnicos</h2>
+						<h2 class="text-3xl md:text-[44px] font-bold leading-tight text-brand-midnight tracking-tight">Artículos Técnicos</h2>
 						<p class="mt-3 text-gray-500 font-light max-w-2xl mx-auto text-[17px]">
 							Divulgación en patología del concreto, sismorresistencia y mejores prácticas de construcción.
 						</p>
@@ -346,9 +346,9 @@ const icons = {
 									<span class="text-[11px] font-bold text-ea-blue uppercase tracking-widest mb-2 block">
 										{new Date(post.data.pubDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
 									</span>
-									<h4 class="font-bold text-[#111111] text-xl leading-tight group-hover:text-ea-blue transition-colors mb-2">{post.data.title}</h4>
+									<h4 class="font-bold text-brand-midnight text-xl leading-tight group-hover:text-ea-blue transition-colors mb-2">{post.data.title}</h4>
 									<p class="text-gray-500 text-xs line-clamp-2 leading-relaxed mb-4">{post.data.description}</p>
-									<span class="text-xs font-bold text-[#111111] inline-flex items-center gap-1 group-hover:text-ea-blue transition-colors">
+									<span class="text-xs font-bold text-brand-midnight inline-flex items-center gap-1 group-hover:text-ea-blue transition-colors">
 										Leer artículo
 										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
 									</span>
@@ -365,7 +365,7 @@ const icons = {
 					<div class="absolute top-0 right-0 w-48 h-48 blueprint-grid-dense opacity-20 pointer-events-none rounded-bl-full"></div>
 					
 					<div class="relative z-10 text-center mb-10">
-						<h2 class="text-3xl font-bold text-[#111111] tracking-tight">¿Necesita un Diagnóstico Especializado?</h2>
+						<h2 class="text-3xl font-bold text-brand-midnight tracking-tight">¿Necesita un Diagnóstico Especializado?</h2>
 						<p class="mt-3 text-gray-500 font-light text-[15px]">Complete el formulario y un ingeniero especialista analizará su caso.</p>
 					</div>
 

@@ -20,7 +20,7 @@ const posts = (await getCollection('blog')).sort(
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	</head>
-	<body class="antialiased bg-white text-[#242424]">
+	<body class="antialiased bg-white text-brand-charcoal">
 		<Header />
 		
 		<main class="w-full">
@@ -30,7 +30,7 @@ const posts = (await getCollection('blog')).sort(
 				<div class="absolute inset-0 blueprint-grid opacity-50 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_100%)]"></div>
 				
 				<div class="relative z-10 max-w-300 mx-auto">
-					<h1 class="text-4xl md:text-5xl font-bold text-[#111111] mb-4 tracking-tight font-display">
+					<h1 class="text-4xl md:text-5xl font-bold text-brand-midnight mb-4 tracking-tight font-display">
 						Blog Técnico y Divulgación
 					</h1>
 					<p class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto font-light">
@@ -72,7 +72,7 @@ const posts = (await getCollection('blog')).sort(
 											<FormattedDate date={post.data.pubDate} />
 										</div>
 										<h4 class:list={[
-											"font-bold text-[#111111] leading-tight group-hover:text-ea-blue transition-colors mb-3 tracking-tight",
+											"font-bold text-brand-midnight leading-tight group-hover:text-ea-blue transition-colors mb-3 tracking-tight",
 											index === 0 ? "text-3xl md:text-4xl font-display" : "text-2xl"
 										]}>
 											{post.data.title}

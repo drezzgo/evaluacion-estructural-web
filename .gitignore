@@ -43,3 +43,4 @@ Thumbs.db
 # Local Agent/Tooling (Optional, but safe for this project)
 .agents/
 .gemini/
+docs/
