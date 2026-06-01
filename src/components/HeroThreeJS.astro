@@ -212,9 +212,15 @@ function initThreeHero() {
   document.head.appendChild(moduleScript);
 }
 
-// Fire on every page load (initial + View Transitions navigations)
+// ── Carga inicial: DOMContentLoaded (React puede retrasar astro:page-load) ──
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(initThreeHero));
+} else {
+  requestAnimationFrame(initThreeHero);
+}
+
+// ── Navegaciones con Astro View Transitions ──────────────────────────────────
 document.addEventListener('astro:page-load', () => {
-  // Small delay to ensure the DOM is ready after swap
   requestAnimationFrame(initThreeHero);
 });
 </script>

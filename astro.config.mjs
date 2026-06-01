@@ -6,17 +6,16 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import react from '@astrojs/react';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.evaluacionestructural.co',
-  integrations: [
-    mdx(), 
-    sitemap({
-      changefreq: 'monthly',
-      priority: 0.7,
-      lastmod: new Date(),
-    })
-  ],
+  integrations: [mdx(), sitemap({
+    changefreq: 'monthly',
+    priority: 0.7,
+    lastmod: new Date(),
+  }), react()],
 
   fonts: [
       {
@@ -41,7 +40,23 @@ export default defineConfig({
               ],
           },
       },
-	],
+      {
+          provider: fontProviders.local(),
+          name: 'Cal Sans',
+          cssVariable: '--font-cal-sans',
+          fallbacks: ['Inter', 'sans-serif'],
+          options: {
+              variants: [
+                  {
+                      src: ['./src/assets/fonts/CalSans-SemiBold.woff2'],
+                      weight: 600,
+                      style: 'normal',
+                      display: 'swap',
+                  },
+              ],
+          },
+      },
+    ],
 
   vite: {
     plugins: [tailwindcss()],

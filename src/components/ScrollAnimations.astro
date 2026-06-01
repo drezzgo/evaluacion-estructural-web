@@ -152,6 +152,14 @@ function initAnimations() {
   });
 }
 
-// Run on every page navigation (Astro View Transitions)
+// ── Carga inicial: DOMContentLoaded (React puede retrasar astro:page-load) ──
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAnimations);
+} else {
+  // El DOM ya está listo (ej: script defer cargado tarde)
+  initAnimations();
+}
+
+// ── Navegaciones con Astro View Transitions ──────────────────────────────────
 document.addEventListener('astro:page-load', initAnimations);
 </script>

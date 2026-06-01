@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* Load Cal Sans display font */
+/* Cal Sans — fuente display. Servida localmente (evita dependencia de CDN externo) */
 @font-face {
   font-family: 'Cal Sans';
-  src: url('https://cdn.jsdelivr.net/npm/cal-sans@1.0.1/dist/CalSans-SemiBold.woff2') format('woff2');
+  src: url('../assets/fonts/CalSans-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
