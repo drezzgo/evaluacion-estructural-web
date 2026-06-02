@@ -42,7 +42,7 @@ export const MATERIALS_CATALOG: Record<string, StructuralMaterial> = {
       densityKgM3: 2400,            // Concreto normal: 2300–2500 kg/m³
       ultimateStrain: 0.003,        // εu ≈ 0.003 según ACI 318 (educativo)
     },
-    colorHex: '#9E9E9E',  // Gris concreto
+    colorHex: '#64748B',  // Gris pizarra
     roughness: 0.9,
     metalness: 0.0,
   },
@@ -65,7 +65,7 @@ export const MATERIALS_CATALOG: Record<string, StructuralMaterial> = {
       densityKgM3: 1800,            // Ladrillo macizo: 1700–1900 kg/m³
       ultimateStrain: 0.004,        // Mayor deformabilidad que concreto
     },
-    colorHex: '#C1440E',  // Rojo ladrillo
+    colorHex: '#D97706',  // Terracota / ámbar oscuro
     roughness: 0.95,
     metalness: 0.0,
   },
@@ -88,7 +88,7 @@ export const MATERIALS_CATALOG: Record<string, StructuralMaterial> = {
       densityKgM3: 1900,            // Sistema mixto: ladrillo + mortero + juntas
       ultimateStrain: 0.005,        // Mayor deformación acumulada en juntas
     },
-    colorHex: '#BC8F5F',  // Color mortero/ladrillo mezclado (café arena)
+    colorHex: '#D4D4D8',  // Arena / Beige grisáceo
     roughness: 0.98,
     metalness: 0.0,
   },
@@ -111,7 +111,7 @@ export const MATERIALS_CATALOG: Record<string, StructuralMaterial> = {
       densityKgM3: 7850,            // Acero estructural: 7800–7900 kg/m³
       ultimateStrain: 0.20,         // Alta ductilidad: 15–25% elongación
     },
-    colorHex: '#5C7A9C',  // Azul acero
+    colorHex: '#0EA5E9',  // Azul acero
     roughness: 0.3,
     metalness: 0.9,
   },

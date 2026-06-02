@@ -107,3 +107,53 @@ export interface CrackPattern {
    */
   damagedAreaPercent: number;
 }
+
+// ---------------------------------------------------------------------------
+// Simulación por Fragmentos (Modelo Educativo)
+// ---------------------------------------------------------------------------
+
+export type CrackPatternType =
+  | 'healthy'
+  | 'horizontal'
+  | 'vertical'
+  | 'diagonal'
+  | 'v-shape'
+  | 'inverted-v'
+  | 'x-shape';
+
+export interface FragmentPolygon {
+  pointsNorm: { x: number; y: number }[];
+}
+
+export interface WallCrackPattern {
+  type: CrackPatternType;
+  fragments: FragmentPolygon[];
+}
+
+export interface FragmentSimulationResult {
+  estimatedStressMPa: number;
+  safetyFactor: number;
+  utilizationRatio: number;
+  damageLevel: DamageLevel;
+  isCritical: boolean;
+}
+
+export interface FragmentFailureResult extends FragmentSimulationResult {
+  // Se puede extender para más detalles de falla por fragmento
+}
+
+export interface WallFragment {
+  id: string;
+  label: string;
+  polygonPoints: { x: number; y: number }[]; // En metros
+  area: number; // m2
+  volume: number; // m3
+  centroid: { x: number; y: number }; // En metros
+  
+  // Resultados de evaluación (integrados directamente o vía interface)
+  estimatedStress: number;
+  safetyFactor: number;
+  utilizationRatio: number;
+  damageLevel: DamageLevel;
+  isCritical: boolean;
+}

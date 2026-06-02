@@ -10,6 +10,10 @@ import {
   selectDamageLevel,
 } from '../../state/wallSimulator.store.ts';
 import { DAMAGE_LEVEL_INFO } from '../../simulation/calculateDamageLevel.ts';
+import { WallFragmentOverlay } from './WallFragmentOverlay.tsx';
+import { CrackPatternLayer } from './CrackPatternLayer.tsx';
+import { CriticalFragmentHighlight } from './CriticalFragmentHighlight.tsx';
+import { AppliedLoadIndicator } from './AppliedLoadIndicator.tsx';
 
 function WallMesh() {
   const dimensions = useWallSimulatorStore(selectDimensions);
@@ -30,21 +34,34 @@ function WallMesh() {
   const currentColor = baseColor.clone().lerp(damageColor, info.visualIntensity);
 
   return (
-    <mesh
-      ref={meshRef}
-      // Re-create geometry safely when dimensions change
-      key={`wall-${widthM}-${heightM}-${thicknessM}`}
-      position={[0, heightM / 2, 0]}
-      castShadow
-      receiveShadow
-    >
-      <boxGeometry args={[widthM, heightM, thicknessM]} />
-      <meshStandardMaterial
-        color={currentColor}
-        roughness={materialProps.roughness}
-        metalness={materialProps.metalness}
-      />
-    </mesh>
+    <group position={[0, heightM / 2, 0]}>
+      <mesh
+        ref={meshRef}
+        // Re-create geometry safely when dimensions change
+        key={`wall-${widthM}-${heightM}-${thicknessM}`}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[widthM, heightM, thicknessM]} />
+        <meshStandardMaterial
+          color={currentColor}
+          roughness={materialProps.roughness}
+          metalness={materialProps.metalness}
+        />
+      </mesh>
+      
+      {/* Educational Fragment Overlays */}
+      <WallFragmentOverlay />
+      
+      {/* Educational Cracks (boundaries between fragments) */}
+      <CrackPatternLayer />
+
+      {/* Critical Fragment Highlight */}
+      <CriticalFragmentHighlight />
+
+      {/* Applied Load Vector */}
+      <AppliedLoadIndicator />
+    </group>
   );
 }
 

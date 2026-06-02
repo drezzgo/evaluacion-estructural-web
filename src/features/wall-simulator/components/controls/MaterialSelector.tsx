@@ -17,7 +17,7 @@ export function MaterialSelector() {
   const current = MATERIALS.find((m) => m.id === materialId)!;
 
   return (
-    <SidebarSection title="Material Estructural" icon="🧱">
+    <SidebarSection title="Material Estructural" icon="🧱" defaultOpen={false}>
       {/* Grid de tarjetas de material */}
       <div className="grid grid-cols-2 gap-2">
         {MATERIALS.map((mat) => {

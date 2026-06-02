@@ -12,6 +12,7 @@ import { ResultsPanel }        from './layout/ResultsPanel.tsx';
 import { WallDimensionsForm }  from './controls/WallDimensionsForm.tsx';
 import { MaterialSelector }    from './controls/MaterialSelector.tsx';
 import { LoadControls }        from './controls/LoadControls.tsx';
+import { CrackPatternSelector } from './controls/CrackPatternSelector.tsx';
 import { WallScene3D }         from './scene/WallScene3D.tsx';
 
 // ─── App principal ─────────────────────────────────────────────────────────
@@ -21,6 +22,7 @@ export function WallSimulatorApp() {
     <SimulatorLayout
       sidebar={
         <SidebarPanel>
+          <CrackPatternSelector />
           <WallDimensionsForm />
           <MaterialSelector />
           <LoadControls />

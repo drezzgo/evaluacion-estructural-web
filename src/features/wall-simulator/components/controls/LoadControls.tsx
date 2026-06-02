@@ -4,8 +4,9 @@
  */
 
 import { useWallSimulatorStore, selectLoad } from '../../state/wallSimulator.store.ts';
-import { SidebarSection, LabeledSlider }     from '../layout/SidebarPanel.tsx';
-import type { LoadDirection }                from '../../domain/load.types.ts';
+import { SidebarSection } from '../layout/SidebarPanel.tsx';
+import { SliderNumberInput } from '../ui/SliderNumberInput.tsx';
+import type { LoadDirection } from '../../domain/load.types.ts';
 
 const DIRECTIONS: { id: LoadDirection; label: string; icon: string; desc: string }[] = [
   { id: 'AXIAL',        label: 'Axial',         icon: '⬇', desc: 'Vertical' },
@@ -21,15 +22,15 @@ export function LoadControls() {
   const resetSimulation = useWallSimulatorStore((s) => s.resetSimulation);
 
   return (
-    <SidebarSection title="Estado de Cargas" icon="⚡">
+    <SidebarSection title="Estado de Cargas" icon="⚡" defaultOpen={false}>
 
-      <LabeledSlider
+      <SliderNumberInput
         label="Magnitud"
         value={load.magnitudeKN}
         min={0}
         max={5000}
         step={10}
-        unit=" kN"
+        unit="kN"
         onChange={(v) => setLoad({ magnitudeKN: v })}
       />
 
@@ -66,13 +67,13 @@ export function LoadControls() {
       </div>
 
       <div className="pt-2">
-        <LabeledSlider
+        <SliderNumberInput
           label="Excentricidad (Posición X)"
           value={load.positionXNorm}
           min={0}
           max={1}
           step={0.05}
-          unit=""
+          unit="%"
           onChange={(v) => setLoad({ positionXNorm: v })}
         />
       </div>

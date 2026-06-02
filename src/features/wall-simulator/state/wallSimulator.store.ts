@@ -37,8 +37,11 @@ import type { WallDimensions }       from '../domain/wall.types.ts';
 import type { MaterialType }         from '../domain/material.types.ts';
 import type { AppliedLoad, LoadDirection } from '../domain/load.types.ts';
 import type { WallSimulationResult } from '../domain/simulation.types.ts';
-import { getMaterialById }           from '../data/materials.catalog.ts';
 import { calculateWallResponse }     from '../simulation/calculateWallResponse.ts';
+import type { CrackPatternType, WallFragment } from '../domain/wall.types.ts';
+import { generateWallFragments }     from '../simulation/generateWallFragments.ts';
+import { evaluateWallFragments, findCriticalFragment } from '../simulation/evaluateWallFragments.ts';
+import { getMaterialById }           from '../data/materials.catalog.ts';
 
 // ─── Valores iniciales ─────────────────────────────────────────────────────
 //
@@ -60,6 +63,8 @@ const INITIAL_LOAD: AppliedLoad = {
   positionYNorm:  1.0,      // Aplicada en la corona del muro
   includeSelfWeight: true,  // Incluir peso propio del muro
 };
+
+const INITIAL_CRACK_PATTERN: CrackPatternType = 'healthy';
 
 // ─── Tipos del store ───────────────────────────────────────────────────────
 
@@ -83,16 +88,21 @@ export interface WallSimulatorState {
   /** Carga estructural aplicada al muro. */
   load: AppliedLoad;
 
+  /** Tipo de patrón de grieta predefinido seleccionado. */
+  selectedCrackPatternType: CrackPatternType;
+
   // ── Resultado derivado (solo lectura para UI y 3D) ───────────────────────
 
   /**
    * Resultado completo de la última simulación.
-   * Siempre está presente — se recalcula síncronamente en cada cambio.
-   *
-   * La UI y los componentes 3D deben leer de aquí, nunca recalcular
-   * por su cuenta. Esto garantiza una única fuente de verdad.
    */
   simulationResult: WallSimulationResult;
+
+  /** Fragmentos del muro evaluados individualmente. */
+  fragments: WallFragment[];
+
+  /** El fragmento con el menor factor de seguridad. */
+  criticalFragment: WallFragment | null;
 
   // ── Acciones ─────────────────────────────────────────────────────────────
 
@@ -121,6 +131,11 @@ export interface WallSimulatorState {
   setLoadDirection: (direction: LoadDirection) => void;
 
   /**
+   * Cambia el patrón de grietas y recalcula la fragmentación.
+   */
+  setCrackPatternType: (type: CrackPatternType) => void;
+
+  /**
    * Fuerza un recálculo completo con el estado actual de inputs.
    * Útil si el catálogo de materiales cambia en runtime (extensibilidad futura).
    */
@@ -146,9 +161,17 @@ function runSimulation(
   dimensions: WallDimensions,
   materialId: MaterialType,
   load:       AppliedLoad,
-): WallSimulationResult {
+  patternType: CrackPatternType,
+): { simulationResult: WallSimulationResult; fragments: WallFragment[]; criticalFragment: WallFragment | null } {
   const material = getMaterialById(materialId);
-  return calculateWallResponse(dimensions, material, load);
+  const simulationResult = calculateWallResponse(dimensions, material, load);
+  
+  const rawFragments = generateWallFragments(dimensions, patternType);
+  const evaluatedFragments = evaluateWallFragments(rawFragments, load, material, dimensions.widthM);
+  const finalFragments = findCriticalFragment(evaluatedFragments);
+  const criticalFragment = finalFragments.find(f => f.isCritical) || null;
+
+  return { simulationResult, fragments: finalFragments, criticalFragment };
 }
 
 // ─── Creación del store ────────────────────────────────────────────────────
@@ -167,18 +190,22 @@ function runSimulation(
  */
 export const useWallSimulatorStore = create<WallSimulatorState>((set, get) => {
   // Calcular el resultado inicial al crear el store
-  const initialResult = runSimulation(
+  const { simulationResult, fragments, criticalFragment } = runSimulation(
     INITIAL_DIMENSIONS,
     INITIAL_MATERIAL_ID,
     INITIAL_LOAD,
+    INITIAL_CRACK_PATTERN
   );
 
   return {
     // ── Estado inicial ──────────────────────────────────────────────────────
-    dimensions:       INITIAL_DIMENSIONS,
-    materialId:       INITIAL_MATERIAL_ID,
-    load:             INITIAL_LOAD,
-    simulationResult: initialResult,
+    dimensions:               INITIAL_DIMENSIONS,
+    materialId:               INITIAL_MATERIAL_ID,
+    load:                     INITIAL_LOAD,
+    selectedCrackPatternType: INITIAL_CRACK_PATTERN,
+    simulationResult,
+    fragments,
+    criticalFragment,
 
     // ── setDimensions ───────────────────────────────────────────────────────
     setDimensions: (partial) => {
@@ -187,19 +214,23 @@ export const useWallSimulatorStore = create<WallSimulatorState>((set, get) => {
           ...state.dimensions,
           ...partial,
         };
+        const updates = runSimulation(nextDimensions, state.materialId, state.load, state.selectedCrackPatternType);
         return {
-          dimensions:       nextDimensions,
-          simulationResult: runSimulation(nextDimensions, state.materialId, state.load),
+          dimensions: nextDimensions,
+          ...updates,
         };
       });
     },
 
     // ── setMaterial ─────────────────────────────────────────────────────────
     setMaterial: (id) => {
-      set((state) => ({
-        materialId:       id,
-        simulationResult: runSimulation(state.dimensions, id, state.load),
-      }));
+      set((state) => {
+        const updates = runSimulation(state.dimensions, id, state.load, state.selectedCrackPatternType);
+        return {
+          materialId: id,
+          ...updates,
+        };
+      });
     },
 
     // ── setLoad ─────────────────────────────────────────────────────────────
@@ -209,9 +240,10 @@ export const useWallSimulatorStore = create<WallSimulatorState>((set, get) => {
           ...state.load,
           ...partial,
         };
+        const updates = runSimulation(state.dimensions, state.materialId, nextLoad, state.selectedCrackPatternType);
         return {
-          load:             nextLoad,
-          simulationResult: runSimulation(state.dimensions, state.materialId, nextLoad),
+          load: nextLoad,
+          ...updates,
         };
       });
     },
@@ -220,29 +252,43 @@ export const useWallSimulatorStore = create<WallSimulatorState>((set, get) => {
     setLoadDirection: (direction) => {
       set((state) => {
         const nextLoad: AppliedLoad = { ...state.load, direction };
+        const updates = runSimulation(state.dimensions, state.materialId, nextLoad, state.selectedCrackPatternType);
         return {
-          load:             nextLoad,
-          simulationResult: runSimulation(state.dimensions, state.materialId, nextLoad),
+          load: nextLoad,
+          ...updates,
+        };
+      });
+    },
+
+    // ── setCrackPatternType ─────────────────────────────────────────────────
+    setCrackPatternType: (type) => {
+      set((state) => {
+        const updates = runSimulation(state.dimensions, state.materialId, state.load, type);
+        return {
+          selectedCrackPatternType: type,
+          ...updates,
         };
       });
     },
 
     // ── recalculate ─────────────────────────────────────────────────────────
     recalculate: () => {
-      const { dimensions, materialId, load } = get();
-      set({ simulationResult: runSimulation(dimensions, materialId, load) });
+      const { dimensions, materialId, load, selectedCrackPatternType } = get();
+      set({ ...runSimulation(dimensions, materialId, load, selectedCrackPatternType) });
     },
 
     // ── resetSimulation ─────────────────────────────────────────────────────
     resetSimulation: () => {
       set({
-        dimensions:       INITIAL_DIMENSIONS,
-        materialId:       INITIAL_MATERIAL_ID,
-        load:             INITIAL_LOAD,
-        simulationResult: runSimulation(
+        dimensions:               INITIAL_DIMENSIONS,
+        materialId:               INITIAL_MATERIAL_ID,
+        load:                     INITIAL_LOAD,
+        selectedCrackPatternType: INITIAL_CRACK_PATTERN,
+        ...runSimulation(
           INITIAL_DIMENSIONS,
           INITIAL_MATERIAL_ID,
           INITIAL_LOAD,
+          INITIAL_CRACK_PATTERN
         ),
       });
     },
@@ -289,6 +335,18 @@ export const selectDamageLevel =
 /** Selector: patrón de grietas (para el motor de rendering 3D). */
 export const selectCrackPattern =
   (s: WallSimulatorState) => s.simulationResult.crackPattern;
+
+/** Selector: patrón de grietas seleccionado por el usuario. */
+export const selectCrackPatternType =
+  (s: WallSimulatorState) => s.selectedCrackPatternType;
+
+/** Selector: fragmentos generados tras la simulación. */
+export const selectFragments =
+  (s: WallSimulatorState) => s.fragments;
+
+/** Selector: fragmento crítico calculado. */
+export const selectCriticalFragment =
+  (s: WallSimulatorState) => s.criticalFragment;
 
 /** Selector: esfuerzos internos (para el gráfico de Recharts). */
 export const selectStresses =
