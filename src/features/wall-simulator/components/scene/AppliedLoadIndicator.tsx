@@ -127,8 +127,8 @@ export function AppliedLoadIndicator() {
       {/* Modern HTML Label at the tail of the arrow */}
       <Html position={tailPos} center distanceFactor={12} zIndexRange={[100, 0]}>
         <div 
-          className="flex flex-col items-center justify-center px-3 py-2 rounded-xl shadow-md border backdrop-blur-md transition-colors"
-          style={{ backgroundColor: `${bg}F0`, borderColor: border }}
+          className="flex flex-col items-center justify-center px-3 py-2 rounded-xl shadow-md border backdrop-blur-md transition-colors pointer-events-none"
+          style={{ backgroundColor: `${bg}F0`, borderColor: border, transform: 'translate3d(40px, -40px, 0)' }}
         >
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 font-sans">Carga {load.direction}</span>
