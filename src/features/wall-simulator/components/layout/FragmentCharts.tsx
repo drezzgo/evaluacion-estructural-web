@@ -36,7 +36,7 @@ export function FragmentCharts({ fragments }: FragmentChartsProps) {
           Factor de Seguridad
         </h4>
         <div className="flex-1 w-full min-h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minHeight={200} minWidth={100}>
             <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
@@ -63,7 +63,7 @@ export function FragmentCharts({ fragments }: FragmentChartsProps) {
           Utilización de Capacidad (%)
         </h4>
         <div className="flex-1 w-full min-h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minHeight={200} minWidth={100}>
             <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
@@ -90,7 +90,7 @@ export function FragmentCharts({ fragments }: FragmentChartsProps) {
           Distribución de Volumen
         </h4>
         <div className="flex-1 w-full min-h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minHeight={200} minWidth={100}>
             <PieChart>
               <Pie
                 data={data}
