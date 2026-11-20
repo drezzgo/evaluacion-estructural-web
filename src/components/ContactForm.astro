@@ -1,28 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
-import { whatsappLink } from '../lib/contact';
+import { whatsappChatUrl } from '../lib/contact';
 
-const number = import.meta.env.PUBLIC_WHATSAPP_NUMBER?.trim() || '573116026712';
-const directLink = whatsappLink(number);
+const chatUrl = whatsappChatUrl(import.meta.env.PUBLIC_WHATSAPP_NUMBER) ?? 'https://wa.me/573116026712';
 const services = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <section id="cotizar" tabindex="-1" aria-labelledby="contact-heading" class="border-t border-slate-200 bg-[#fbfdfd] px-5 py-14 md:px-8 md:py-20">
 	<div class="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white px-5 py-7 sm:p-9 md:p-12">
 		<h2 id="contact-heading" class="text-3xl leading-tight md:text-4xl">Solicite una consulta estructural</h2>
-		<p id="contact-instructions" class="mt-3 max-w-[65ch] leading-relaxed text-slate-700">
-			{directLink
-				? 'Complete los campos y revise su solicitud. Al continuar en WhatsApp, se abrirá el chat de la firma con el mensaje listo para enviar.'
-				: 'El contacto por WhatsApp no está disponible en este momento. Puede preparar y copiar el texto de su consulta.'}
-		</p>
+		<p id="contact-instructions" class="mt-3 max-w-[65ch] leading-relaxed text-slate-700">Cuéntenos su caso. Abriremos el chat de la firma con su consulta lista para enviar.</p>
 
-		{directLink && (
-			<a href={directLink} target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-ea-blue underline underline-offset-4">
-				Abrir chat de WhatsApp (nueva pestaña)
-			</a>
-		)}
-
-		<form data-contact-form data-whatsapp-number={directLink ? number : undefined} aria-describedby="contact-instructions" class="mt-6" hidden>
+		<form data-contact-form data-astro-reload action={chatUrl} method="get" aria-describedby="contact-instructions" class="mt-6" hidden>
 			<p class="mb-3 text-sm text-slate-700">Todos los campos son obligatorios.</p>
 			<div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
 				<div>
@@ -51,30 +40,14 @@ const services = (await getCollection('servicios')).sort((a, b) => a.data.order 
 					<textarea id="details" name="details" rows="4" aria-describedby="contact-details-hint" required maxlength="750"></textarea>
 				</div>
 			</div>
-			<button type="submit" class="cal-button-primary mt-6 min-h-12 w-full text-sm sm:w-auto">Preparar solicitud</button>
-			<p data-contact-status role="status" class="mt-3 text-sm text-slate-700"></p>
-			<div data-contact-preview class="mt-5 rounded-xl border border-slate-200 bg-[#fbfdfd] p-4 sm:p-5" hidden>
-				<label for="contact-draft">Mensaje preparado</label>
-				<textarea id="contact-draft" rows="7" readonly></textarea>
-				<div class="mt-3 flex flex-wrap gap-3">
-					{directLink && (
-						<a data-whatsapp-link target="_blank" rel="noopener noreferrer" class="cal-button-primary min-h-11 text-sm">
-							Continuar en WhatsApp (nueva pestaña)
-						</a>
-					)}
-					<button type="button" data-copy-draft class="cal-button-secondary min-h-11 text-sm">Copiar mensaje</button>
-				</div>
-			</div>
+			<button type="submit" class="cal-button-primary mt-6 min-h-12 w-full text-sm sm:w-auto">Continuar en WhatsApp</button>
 		</form>
 		<noscript>
-			<div class="mt-5">
-				<label for="contact-template">Plantilla de consulta</label>
-				<p id="contact-template-hint" class="mb-2 text-sm text-slate-700">Copie esta plantilla y complete los campos en su mensaje.</p>
-				<textarea id="contact-template" aria-describedby="contact-template-hint" rows="6" readonly>{[
-					'Hola, quisiera solicitar una consulta de ingeniería estructural.',
-					'Nombre:', 'Teléfono:', 'Ciudad o proyecto:', 'Servicio:', 'Detalles:',
-				].join('\n')}</textarea>
-			</div>
+			<form action={chatUrl} method="get" aria-describedby="contact-instructions" class="mt-6">
+				<label for="contact-message">Su consulta</label>
+				<textarea id="contact-message" name="text" rows="4" maxlength="1200" required></textarea>
+				<button type="submit" class="cal-button-primary mt-6 min-h-12 w-full text-sm sm:w-auto">Continuar en WhatsApp</button>
+			</form>
 		</noscript>
 	</div>
 </section>
@@ -100,30 +73,19 @@ const services = (await getCollection('servicios')).sort((a, b) => a.data.order 
 </style>
 
 <script>
-	import { buildContactMessage, whatsappLink } from '../lib/contact';
+	import { buildContactMessage } from '../lib/contact';
 
 	function initializeContactForm() {
 		const form = document.querySelector<HTMLFormElement>('[data-contact-form][hidden]');
-		const preview = form?.querySelector<HTMLElement>('[data-contact-preview]');
-		const status = form?.querySelector<HTMLElement>('[data-contact-status]');
-		const draft = form?.querySelector<HTMLTextAreaElement>('#contact-draft');
 		const details = form?.querySelector<HTMLTextAreaElement>('#details');
-		const link = form?.querySelector<HTMLAnchorElement>('[data-whatsapp-link]');
 		const service = form?.querySelector<HTMLSelectElement>('#service');
-		if (!form || !preview || !status || !draft || !details || !service) return;
+		if (!form || !details || !service) return;
 
 		const selectedService = new URLSearchParams(location.search).get('servicio');
 		const matchingOption = Array.from(service.options).find((option) => option.dataset.serviceId === selectedService);
 		if (matchingOption) matchingOption.selected = true;
 
-		form.addEventListener('input', () => {
-			details.setCustomValidity('');
-			if (!preview.hidden) {
-				preview.hidden = true;
-				link?.removeAttribute('href');
-				status.textContent = 'Prepare la solicitud de nuevo para incluir los cambios.';
-			}
-		});
+		details.addEventListener('input', () => details.setCustomValidity(''));
 
 		form.addEventListener('submit', (event) => {
 			event.preventDefault();
@@ -134,23 +96,9 @@ const services = (await getCollection('servicios')).sort((a, b) => a.data.order 
 				return;
 			}
 
-			draft.value = message;
-			const destination = whatsappLink(form.dataset.whatsappNumber, message);
-			if (link && destination) link.href = destination;
-			preview.hidden = false;
-			status.textContent = 'La solicitud está lista para revisar.';
-			draft.focus();
-		});
-
-		form.querySelector('[data-copy-draft]')?.addEventListener('click', async () => {
-			try {
-				await navigator.clipboard.writeText(draft.value);
-				status.textContent = 'Se copió el mensaje.';
-			} catch {
-				draft.focus();
-				draft.select();
-				status.textContent = 'El mensaje está seleccionado. Cópielo con el comando de su dispositivo.';
-			}
+			const destination = new URL(form.action);
+			destination.searchParams.set('text', message);
+			window.location.assign(destination.href);
 		});
 
 		form.hidden = false;

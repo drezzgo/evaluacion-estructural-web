@@ -1,15 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { buildContactMessage, whatsappLink } from '../src/lib/contact.ts';
+import { buildContactMessage, whatsappChatUrl } from '../src/lib/contact.ts';
 
 test('recognizes only a configured international destination and rejects the old placeholder', () => {
-  assert.equal(whatsappLink(undefined, 'Consulta'), null);
-  assert.equal(whatsappLink('573000000000', 'Consulta'), null);
-  assert.equal(whatsappLink('300 123 4567', 'Consulta'), null);
-  const url = new URL(whatsappLink(' +12025550123 ', 'Bogotá & obra'));
-  assert.equal(url.origin + url.pathname, 'https://wa.me/12025550123');
-  assert.equal(url.searchParams.get('text'), 'Bogotá & obra');
+  assert.equal(whatsappChatUrl(undefined), null);
+  assert.equal(whatsappChatUrl('573000000000'), null);
+  assert.equal(whatsappChatUrl('300 123 4567'), null);
+  assert.equal(whatsappChatUrl(' +573116026712 '), 'https://wa.me/573116026712');
 });
 
 test('the contact draft includes all five fields and preserves multiline details', () => {

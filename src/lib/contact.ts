@@ -1,11 +1,9 @@
 export const CONTACT_PATH = '/#cotizar';
 
-const inquiry = 'Hola, quisiera solicitar información sobre sus servicios de evaluación estructural.';
-
-export function whatsappLink(number: string | undefined, message = inquiry): string | null {
+export function whatsappChatUrl(number: string | undefined): string | null {
 	const digits = number?.trim().replace(/^\+/, '');
 	if (!digits || digits === '573000000000' || !/^[1-9]\d{10,14}$/.test(digits)) return null;
-	return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(message);
+	return 'https://wa.me/' + digits;
 }
 
 export function buildContactMessage(data: FormData): string | null {
