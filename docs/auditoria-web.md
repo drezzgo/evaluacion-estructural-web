@@ -66,9 +66,10 @@ Los 95 archivos de fuentes, recursos públicos, pruebas y configuración coincid
 
 En Edge a 390 px se abrió el menú de servicios con los scripts de la página desactivados. En el formulario se probaron los dos resultados del permiso de portapapeles con una implementación simulada. Al aceptar, el botón copió el borrador completo y anunció la confirmación. Al denegar, seleccionó todo el texto, devolvió el foco al borrador e indicó cómo copiarlo. [Resultados de la reanudación](../.astro/site-audit/evidence/reanudacion.json)
 
+El titular confirmó el destinatario +57 311 602 6712. El formulario usa ese número por defecto y conserva la opción de configurar otro destino mediante `PUBLIC_WHATSAPP_NUMBER` al compilar.
+
 ## Pendientes externos
 
-- El titular debe confirmar el destinatario oficial y proporcionar `PUBLIC_WHATSAPP_NUMBER` en la compilación autorizada. Formato de país y número, con dígitos y un prefijo `+` opcional. Mientras falte, aparece el borrador local. Para reproducir la prueba de código en Node 22.12 o superior use `node --experimental-strip-types --test`.
 - Al publicar con autorización, comprobar en producción que `.co` conserva su redirección y que `.com` sirve HTML, robots.txt y sitemap con la URL final. Revisar esas URLs y su indexación en Search Console.
 - Solicitar a la firma respaldo de cifras, hitos y promesas técnicas existentes. Los tres artículos que figuran bajo Proyectos se identifican como guías hasta disponer de casos reales que la firma pueda publicar. Los perfiles sociales requieren enlaces confirmados.
 - La prueba usó Edge emulado. Quedan por revisar lector de pantalla, dispositivos físicos, otros motores, y datos de uso real de Core Web Vitals. Para reproducir el flujo, iniciar el preview de la compilación y recorrer con teclado y lector la cabecera, una ficha y el borrador de consulta. Lighthouse no estaba instalado.

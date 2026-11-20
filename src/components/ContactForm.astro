@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import { whatsappLink } from '../lib/contact';
 
-const number = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
+const number = import.meta.env.PUBLIC_WHATSAPP_NUMBER?.trim() || '573116026712';
 const directLink = whatsappLink(number);
 const services = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
 ---
@@ -12,7 +12,7 @@ const services = (await getCollection('servicios')).sort((a, b) => a.data.order 
 		<h2 id="contact-heading" class="text-3xl leading-tight md:text-4xl">Solicite una consulta estructural</h2>
 		<p id="contact-instructions" class="mt-3 max-w-[65ch] leading-relaxed text-slate-700">
 			{directLink
-				? 'Complete los campos y revise su mensaje antes de abrir WhatsApp.'
+				? 'Complete los campos y revise su solicitud. Al continuar en WhatsApp, se abrirá el chat de la firma con el mensaje listo para enviar.'
 				: 'El contacto por WhatsApp no está disponible en este momento. Puede preparar y copiar el texto de su consulta.'}
 		</p>
 
@@ -57,12 +57,12 @@ const services = (await getCollection('servicios')).sort((a, b) => a.data.order 
 				<label for="contact-draft">Mensaje preparado</label>
 				<textarea id="contact-draft" rows="7" readonly></textarea>
 				<div class="mt-3 flex flex-wrap gap-3">
-					<button type="button" data-copy-draft class="cal-button-secondary min-h-11 text-sm">Copiar mensaje</button>
 					{directLink && (
 						<a data-whatsapp-link target="_blank" rel="noopener noreferrer" class="cal-button-primary min-h-11 text-sm">
-							Abrir WhatsApp (nueva pestaña)
+							Continuar en WhatsApp (nueva pestaña)
 						</a>
 					)}
+					<button type="button" data-copy-draft class="cal-button-secondary min-h-11 text-sm">Copiar mensaje</button>
 				</div>
 			</div>
 		</form>

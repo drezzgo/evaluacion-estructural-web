@@ -26,7 +26,7 @@ Conservar el nombre Evaluación Estructural SAS, el isotipo existente y el trato
 
 - `src/content/servicios`, `src/content/blog` y `src/content/proyectos` contienen el material editorial existente.
 - La página `/about/` describe la firma, sus métodos e hitos.
-- El sitio y el repositorio muestran un número de WhatsApp provisional. El titular debe proporcionar el destino oficial.
+- El titular confirmó el número colombiano +57 311 602 6712 para recibir las consultas del formulario por WhatsApp.
 
 ## Accessibility & Inclusion
 
