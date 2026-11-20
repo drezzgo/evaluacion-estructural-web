@@ -9,6 +9,7 @@ const blog = defineCollection({
 			title: z.string(),
 			description: z.string(),
 			pubDate: z.coerce.date(),
+			headingId: z.string().optional(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
 		}),
@@ -32,6 +33,7 @@ const proyectos = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			headingId: z.string().optional(),
 			icon: z.string().optional(), // Para mostrar un icono en el listado
 			order: z.number().default(0), // Para controlar el orden en el grid
 			heroImage: z.optional(image()),

@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { projectCanonical } from '../../lib/project-canonicals.mjs';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('proyectos');
@@ -15,6 +16,6 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data}>
+<BlogPost {...post.data} collection="proyectos" canonicalPath={projectCanonical(post.id)}>
 	<Content />
 </BlogPost>

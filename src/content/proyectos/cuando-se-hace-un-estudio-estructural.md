@@ -1,11 +1,10 @@
 ---
 title: "¿Cuándo es obligatorio un estudio estructural en Colombia?"
 description: "Conozca en qué casos es obligatorio realizar un estudio estructural según la normativa colombiana y por qué es fundamental para la seguridad de su proyecto."
+headingId: "cuándo-es-obligatorio-un-estudio-estructural-en-colombia"
 pubDate: 2025-01-01
 heroImage: '../../assets/blog-placeholder-1.jpg'
 ---
-
-# ¿Cuándo es obligatorio un estudio estructural en Colombia?
 
 En Colombia, el desarrollo de cualquier proyecto de construcción debe cumplir con una serie de requisitos técnicos y normativos que garantizan la seguridad de las edificaciones. Uno de los más importantes es el estudio estructural.
 

@@ -4,21 +4,21 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-
-const { pathname } = Astro.url;
-const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+const normalize = (path: string) => path.replace(/\/$/, '') || '/';
+const current = normalize(Astro.url.pathname);
+const destination = typeof href === 'string' ? normalize(href) : '';
+const isCurrent = current === destination;
+const isActive = isCurrent || (destination !== '/' && current.startsWith(destination + '/'));
 ---
 
-<a 
-	href={href} 
+<a
+	href={href}
+	aria-current={isCurrent ? 'page' : undefined}
 	class:list={[
-		"relative inline-flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 no-underline rounded-md",
-		isActive 
-			? "text-ea-blue bg-ea-blue/5 font-semibold" 
-			: "text-gray-600 hover:text-brand-midnight hover:bg-gray-50",
-		className
-	]} 
+		'flex min-h-11 items-center rounded-md px-3 py-2 text-sm font-medium',
+		isActive ? 'bg-ea-blue/5 font-semibold text-ea-blue' : 'text-slate-700 hover:bg-slate-100 hover:text-brand-midnight',
+		className,
+	]}
 	{...props}
 >
 	<slot />

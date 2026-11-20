@@ -1,11 +1,10 @@
 ---
 title: "La importancia del diseño estructural en la construcción"
 description: "Descubra por qué el diseño estructural es fundamental para garantizar la seguridad, estabilidad y durabilidad de cualquier proyecto constructivo."
+headingId: "la-importancia-del-diseño-estructural-en-la-construcción"
 pubDate: 2025-01-01
 heroImage: '../../assets/blog-placeholder-4.jpg'
 ---
-
-# La importancia del diseño estructural en la construcción
 
 El diseño estructural es una de las áreas fundamentales dentro de la ingeniería civil, ya que garantiza la seguridad, estabilidad y funcionalidad de las edificaciones.
 

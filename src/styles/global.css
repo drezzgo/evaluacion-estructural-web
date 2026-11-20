@@ -21,21 +21,46 @@
   --font-display: 'Cal Sans', 'Inter', sans-serif;
 }
 
-/* Base Styles */
-html, body {
-  font-family: var(--font-sans);
-  color: var(--color-brand-charcoal);
-  background-color: #ffffff;
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  html {
+    scroll-padding-block-start: 5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-brand-charcoal);
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-ea-blue);
+    outline-offset: 3px;
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--color-brand-midnight);
+.skip-link {
+  position: fixed;
+  z-index: 60;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  transform: translateY(calc(-100% - 1rem));
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  background-color: var(--color-brand-midnight);
+  color: white;
+}
+
+.skip-link:focus {
+  transform: none;
 }
 
 /* Selection highlight in brand colors */
@@ -50,7 +75,7 @@ h1, h2, h3, h4, h5, h6 {
     rgba(19, 19, 22, 0.04) 0px 1px 5px -4px, 
     rgba(18, 110, 166, 0.08) 0px 0px 0px 1px, 
     rgba(18, 110, 166, 0.04) 0px 4px 12px 0px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 0.2s ease;
 }
 
 .cal-shadow:hover {
@@ -58,7 +83,6 @@ h1, h2, h3, h4, h5, h6 {
     rgba(19, 19, 22, 0.06) 0px 2px 8px -3px, 
     rgba(18, 110, 166, 0.12) 0px 0px 0px 1px, 
     rgba(18, 110, 166, 0.08) 0px 8px 24px 0px;
-  transform: translateY(-2px);
 }
 
 .cal-button-primary {
@@ -70,13 +94,12 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
   font-weight: 500;
   border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.2s ease;
   box-shadow: rgba(255, 255, 255, 0.1) 0px 2px 0px inset, rgba(0, 0, 0, 0.05) 0px 2px 4px;
 }
 
 .cal-button-primary:hover {
   background-color: var(--color-brand-midnight);
-  transform: translateY(-1px);
   box-shadow: rgba(255, 255, 255, 0.15) 0px 2px 0px inset, rgba(18, 110, 166, 0.2) 0px 4px 12px;
 }
 
@@ -93,13 +116,13 @@ h1, h2, h3, h4, h5, h6 {
     rgba(19, 19, 22, 0.02) 0px 1px 5px -4px, 
     rgba(18, 110, 166, 0.08) 0px 0px 0px 1px, 
     rgba(18, 110, 166, 0.03) 0px 4px 8px 0px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #cbd5e1;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .cal-button-secondary:hover {
   background-color: rgba(18, 110, 166, 0.02);
   border-color: rgba(18, 110, 166, 0.2);
-  transform: translateY(-1px);
   box-shadow: 
     rgba(19, 19, 22, 0.04) 0px 1px 5px -4px, 
     rgba(18, 110, 166, 0.12) 0px 0px 0px 1px, 
@@ -138,27 +161,13 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(90deg, transparent, rgba(18, 110, 166, 0.2) 20%, rgba(18, 110, 166, 0.2) 80%, transparent);
 }
 
-/* Staggered fadeInUp entrance animations (Framer/Motion inspired CSS-only) */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
+@media (prefers-reduced-motion: reduce) {
+  .cal-shadow, .cal-button-primary, .cal-button-secondary {
+    transition: none;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .animate-pulse {
+    animation: none;
   }
 }
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.delay-75 { animation-delay: 75ms; }
-.delay-100 { animation-delay: 100ms; }
-.delay-150 { animation-delay: 150ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
 

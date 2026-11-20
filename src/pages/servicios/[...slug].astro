@@ -18,7 +18,8 @@ const { Content } = await render(servicio);
 <BlogPost 
 	title={servicio.data.title}
 	description={servicio.data.description}
-	pubDate={new Date()}
+	collection="servicios"
+	serviceSlug={servicio.id}
 	heroImage={servicio.data.heroImage}
 >
 	<Content />

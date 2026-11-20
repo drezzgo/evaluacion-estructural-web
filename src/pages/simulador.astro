@@ -18,25 +18,25 @@ import { WallSimulatorApp } from '../features/wall-simulator/components/WallSimu
   <BaseHead 
     title={`Simulador Estructural | ${SITE_TITLE}`} 
     description="Simulador educativo de fallas estructurales en muros. Visualiza en tiempo real cómo el material, las dimensiones y las cargas afectan la integridad de un muro." 
+    noindex
   />
-  <meta name="robots" content="noindex" />
 </head>
 <body class="antialiased bg-[#fbfdfd] text-brand-charcoal min-h-screen flex flex-col">
   <Header />
   
-  <main class="flex-1 w-full max-w-[1400px] mx-auto px-4 py-8 md:py-12 flex flex-col gap-6">
+  <main id="main-content" tabindex="-1" class="flex-1 w-full max-w-[1400px] mx-auto px-4 py-8 md:py-12 flex flex-col gap-6">
     {/* Encabezado del simulador */}
     <div class="text-center max-w-3xl mx-auto">
       <div class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-ea-blue bg-ea-blue/5 border border-ea-blue/10 rounded-full mb-4">
-        <span class="w-1.5 h-1.5 rounded-full bg-ea-blue animate-pulse"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-ea-blue"></span>
         Herramienta Educativa Interactiva
       </div>
-      <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-brand-midnight font-display mb-4">
+      <h1 class="text-3xl md:text-5xl tracking-tight text-brand-midnight font-display mb-4">
         Simulador de Muros
       </h1>
-      <p class="text-gray-500 text-sm md:text-base font-light">
+      <p class="text-slate-700 text-sm md:text-base">
         Ajusta dimensiones, materiales y cargas para observar el comportamiento estructural.
-        <br/><span class="font-medium text-ea-blue/80 text-xs">Simulación teórica con fines demostrativos.</span>
+        <br/><span class="font-medium text-ea-blue text-xs">Simulación teórica con fines demostrativos.</span>
       </p>
     </div>
 

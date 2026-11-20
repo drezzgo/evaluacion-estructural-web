@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "src/components/BaseHead.astro"
+        ],
+        "createdAt": "2026-11-20T19:28:45.349Z",
+        "reason": "Brief de la marca: conservar las tipografías existentes. DESIGN.md documenta Inter como fuente de lectura y BaseHead centraliza su carga."
+      }
+    ]
+  }
+}

@@ -148,9 +148,7 @@ export function AppliedLoadIndicator() {
       {/* Connection Line to Critical Fragment */}
       {isFragmented && connectionLine && (
         <group>
-          {/* Native Three.js dashed line */}
-          {/* @ts-ignore - React DOM SVG types conflict with R3F line */}
-          <line
+          <threeLine
             geometry={new THREE.BufferGeometry().setFromPoints([
               new THREE.Vector3(...connectionLine.start),
               new THREE.Vector3(...connectionLine.end)
@@ -166,7 +164,7 @@ export function AppliedLoadIndicator() {
               transparent
               opacity={0.5}
             />
-          </line>
+          </threeLine>
           {/* Target marker at centroid */}
           <mesh position={connectionLine.end}>
             <circleGeometry args={[0.06, 32]} />

@@ -1,11 +1,10 @@
 ---
 title: "¿Qué es una evaluación estructural y cuándo se necesita?"
 description: "Aprenda qué es una evaluación estructural, en qué casos se requiere y por qué es clave para garantizar la seguridad de una edificación."
+headingId: "qué-es-una-evaluación-estructural-y-cuándo-se-necesita"
 pubDate: 2025-01-05
 heroImage: '../../assets/blog-placeholder-2.jpg'
 ---
-
-# ¿Qué es una evaluación estructural y cuándo se necesita?
 
 La evaluación estructural es un proceso técnico que permite determinar el estado de una edificación, identificando posibles daños, debilidades o riesgos que puedan comprometer su seguridad.
 

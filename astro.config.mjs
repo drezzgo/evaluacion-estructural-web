@@ -2,7 +2,8 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
+import { projectCanonical } from './src/lib/project-canonicals.mjs';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -10,53 +11,14 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.evaluacionestructural.co',
+  site: 'https://www.evaluacionestructural.com',
   integrations: [mdx(), sitemap({
-    changefreq: 'monthly',
-    priority: 0.7,
-    lastmod: new Date(),
+    filter(page) {
+      const [section, slug] = new URL(page).pathname.split('/').filter(Boolean);
+      if (section === 'prototype' || section === 'simulador') return false;
+      return section !== 'proyectos' || !slug || !projectCanonical(slug);
+    },
   }), react()],
-
-  fonts: [
-      {
-          provider: fontProviders.local(),
-          name: 'Atkinson',
-          cssVariable: '--font-atkinson',
-          fallbacks: ['sans-serif'],
-          options: {
-              variants: [
-                  {
-                      src: ['./src/assets/fonts/atkinson-regular.woff'],
-                      weight: 400,
-                      style: 'normal',
-                      display: 'swap',
-                  },
-                  {
-                      src: ['./src/assets/fonts/atkinson-bold.woff'],
-                      weight: 700,
-                      style: 'normal',
-                      display: 'swap',
-                  },
-              ],
-          },
-      },
-      {
-          provider: fontProviders.local(),
-          name: 'Cal Sans',
-          cssVariable: '--font-cal-sans',
-          fallbacks: ['Inter', 'sans-serif'],
-          options: {
-              variants: [
-                  {
-                      src: ['./src/assets/fonts/CalSans-SemiBold.woff2'],
-                      weight: 600,
-                      style: 'normal',
-                      display: 'swap',
-                  },
-              ],
-          },
-      },
-    ],
 
   vite: {
     plugins: [tailwindcss()],

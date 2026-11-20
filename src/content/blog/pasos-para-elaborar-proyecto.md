@@ -1,11 +1,10 @@
 ---
 title: 'Pasos para elaborar un proyecto de construcción'
 description: 'Conozca las etapas clave en la planificación y desarrollo de un proyecto de construcción, desde el diseño arquitectónico hasta la obtención de permisos.'
+headingId: "pasos-para-elaborar-un-proyecto-de-construcción"
 pubDate: '2026-04-20'
 heroImage: '../../assets/blog-placeholder-3.jpg'
 ---
-
-# Pasos para elaborar un proyecto de construcción
 
 El desarrollo de un proyecto de construcción requiere la integración de diferentes disciplinas técnicas que garantizan la seguridad, funcionalidad y viabilidad de la obra. A continuación, se describen las principales etapas.
 
